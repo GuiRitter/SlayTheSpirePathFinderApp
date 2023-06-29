@@ -1,3 +1,9 @@
 {
-  "title": "Slay the Spire Path Finder"
+  "elite": "eLite",
+  "enemy": "Enemy",
+  "merchant": "Merchant",
+  "rest": "Rest",
+  "title": "Slay the Spire Path Finder",
+  "treasure": "Treasure",
+  "unknown": "Unknown"
 }

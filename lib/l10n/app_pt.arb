@@ -1,3 +1,9 @@
 {
-  "title": "Busca de Caminho para Slay the Spire"
+  "elite": "eLite",
+  "enemy": "Enemy",
+  "merchant": "Merchant",
+  "rest": "Rest",
+  "title": "Busca de Caminho para Slay the Spire",
+  "treasure": "Treasure",
+  "unknown": "Unknown"
 }

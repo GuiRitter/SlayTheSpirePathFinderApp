@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:slay_the_spire_path_finder_mobile/blocs/user.bloc.dart';
+import 'package:slay_the_spire_path_finder_mobile/pages/tabs.page.dart';
 
 // flutter build web --base-href "/slay_the_spire_path_finder/"
 
@@ -18,29 +21,31 @@ class MyApp extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) =>
-      MaterialApp(
-        title: getTitle(context),
-        theme: Theme.of(
-          context,
-        ).copyWith(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.brown,
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<UserBloc>.value(
+            value: UserBloc(),
           ),
-        ),
-        darkTheme: ThemeData.dark().copyWith(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.brown,
-          ),
-        ),
-        // flutter gen-l10n
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              "Slay the Spire Path Finder",
+        ],
+        child: MaterialApp(
+          title: getTitle(context),
+          theme: Theme.of(
+            context,
+          ).copyWith(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.brown,
             ),
           ),
+          darkTheme: ThemeData.dark().copyWith(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.brown,
+            ),
+          ),
+          // flutter gen-l10n
+          // TODO see if the names in the map Legend change in Portuguese
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const TabsPage(),
         ),
       );
 
