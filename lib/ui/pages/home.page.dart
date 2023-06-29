@@ -1,5 +1,6 @@
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:slay_the_spire_path_finder_mobile/ui/shared/formatters/decimal_text_input.formatter.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -42,62 +43,80 @@ class HomePage extends StatelessWidget {
                 children: [
                   IntrinsicWidth(
                     child: TextFormField(
+                      inputFormatters: [
+                        DecimalTextInputFormatter(),
+                      ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        // TODO
                         labelText: l10n.unknown,
                         hintText: l10n.unknown,
                       ),
+                      initialValue: "1",
                     ),
                   ),
                   IntrinsicWidth(
                     child: TextFormField(
+                      inputFormatters: [
+                        DecimalTextInputFormatter(),
+                      ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        // TODO
                         labelText: l10n.merchant,
                         hintText: l10n.merchant,
                       ),
+                      initialValue: "1",
                     ),
                   ),
                   IntrinsicWidth(
                     child: TextFormField(
+                      inputFormatters: [
+                        DecimalTextInputFormatter(),
+                      ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        // TODO
                         labelText: l10n.treasure,
                         hintText: l10n.treasure,
                       ),
+                      initialValue: "1",
                     ),
                   ),
                   IntrinsicWidth(
                     child: TextFormField(
+                      inputFormatters: [
+                        DecimalTextInputFormatter(),
+                      ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        // TODO
                         labelText: l10n.rest,
                         hintText: l10n.rest,
                       ),
+                      initialValue: "1",
                     ),
                   ),
                   IntrinsicWidth(
                     child: TextFormField(
+                      inputFormatters: [
+                        DecimalTextInputFormatter(),
+                      ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        // TODO
                         labelText: l10n.enemy,
                         hintText: l10n.enemy,
                       ),
+                      initialValue: "1",
                     ),
                   ),
                   IntrinsicWidth(
                     child: TextFormField(
+                      inputFormatters: [
+                        DecimalTextInputFormatter(),
+                      ],
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        // TODO
                         labelText: l10n.elite,
                         hintText: l10n.elite,
                       ),
+                      initialValue: "1",
                     ),
                   ),
                 ],

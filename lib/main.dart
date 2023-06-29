@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:slay_the_spire_path_finder_mobile/blocs/user.bloc.dart';
-import 'package:slay_the_spire_path_finder_mobile/pages/tabs.page.dart';
+import 'package:slay_the_spire_path_finder_mobile/ui/pages/tabs.page.dart';
 
 // flutter build web --base-href "/slay_the_spire_path_finder/"
 
