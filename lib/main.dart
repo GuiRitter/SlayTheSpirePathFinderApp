@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+// flutter build web --base-href "/slay_the_spire_path_finder/"
+
 void main() {
   runApp(
     const MyApp(),
