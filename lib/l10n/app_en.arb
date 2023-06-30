@@ -1,6 +1,8 @@
 {
   "elite": "eLite",
   "enemy": "Enemy",
+  "map": "Map",
+  "mapHint": "Enter a directed graph represented by a kind of \"incidence list\".\nEvery floor is represented by a node, which is represented by a letter and a number. The letter represents which floor kind it is. Look at the labels above and use the uppercase letter for each. The number identifies each floor of a kind.\nEach transition from one floor to another must be represented by an \"incidence\". Transitions can be separated by whitespace and new lines. A transition is represented by the name of the exiting floor, a hyphen and the name of the entering floor.\nThere are two special floors, \"N\" and \"B\". \"N\" represents the beginning of an Act. There must be a transition from \"N\" to each one of the starting floors that you can choose when you begin an Act. \"B\" represents the Act''s Boss. There must be a transition to \"B\" for each floor that leads to the Act''s Boss.",
   "merchant": "Merchant",
   "rest": "Rest",
   "title": "Slay the Spire Path Finder",
