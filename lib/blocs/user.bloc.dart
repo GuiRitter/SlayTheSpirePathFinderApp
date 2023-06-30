@@ -5,8 +5,10 @@ class UserBloc extends ChangeNotifier {
 
   String? get output => _output;
 
-  set output(String? value) {
-    _output = output;
+  set output(
+    String? value,
+  ) {
+    _output = value;
     notifyListeners();
   }
 }
