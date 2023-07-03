@@ -1,5 +1,6 @@
 {
   "bestPath": "Melhor caminho",
+  "duplicate": "Há uma transição aparecendo mais de uma vez no mapa. Talvez uma delas foi escrita errada?",
   "elite": "eLite",
   "enemy": "Enemy",
   "findBestPath": "Buscar o melhor caminho",

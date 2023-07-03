@@ -1,5 +1,6 @@
 {
   "bestPath": "Best path",
+  "duplicate": "There is a transition appearing more than once in the map. Maybe one of them was typed incorrectly?",
   "elite": "eLite",
   "enemy": "Enemy",
   "findBestPath": "Find the best path",
