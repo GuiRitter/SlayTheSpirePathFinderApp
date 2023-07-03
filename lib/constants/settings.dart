@@ -4,4 +4,20 @@ class Settings {
 
   /// 2^53 - 1
   static const intMax53 = 0x1fffffffffffff;
+
+  static RegExp exitingFloorRegex = RegExp(
+    r'(?<exitingNeow>N)|((?<exitingFloor>[UMTREL]{1})(?<exitingNumber>[0-9]+))-',
+  );
+
+  static RegExp enteringFloorRegex = RegExp(
+    r'(?<enteringBoss>B)|((?<enteringFloor>[UMTREL]{1})(?<enteringNumber>[0-9]+))',
+  );
+
+  static RegExp floorRegex = RegExp(
+    r'(?<exitingNeow>N)|((?<exitingFloor>[UMTREL]{1})(?<exitingNumber>[0-9]+))-(?<enteringBoss>B)|((?<enteringFloor>[UMTREL]{1})(?<enteringNumber>[0-9]+))\s+',
+  );
+
+  static RegExp mapRegex = RegExp(
+    r'^(((N|([UMTREL]{1}[0-9]+))-(B|([UMTREL]{1}[0-9]+)))\s+)+$',
+  );
 }

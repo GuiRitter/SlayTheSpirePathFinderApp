@@ -5,10 +5,14 @@ class UserBloc extends ChangeNotifier {
 
   String? get output => _output;
 
-  set output(
-    String? value,
-  ) {
-    _output = value;
+  clearPaths() {
+    _output = null;
+    notifyListeners();
+  }
+
+  findPaths(String graph) {
+    // TODO
+    _output = "Hello, World!";
     notifyListeners();
   }
 }

@@ -58,6 +58,6 @@ class OutputPage extends StatelessWidget {
       listen: false,
     );
 
-    userBloc.output = null;
+    userBloc.clearPaths();
   }
 }

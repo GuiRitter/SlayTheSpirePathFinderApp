@@ -5,6 +5,8 @@
   "findBestPath": "Buscar o melhor caminho",
   "map": "Mapa",
   "mapHint": "Insira um grafo direcionado representado por um tipo de \"lista de incidência\".\nCada andar é representado por um nodo, que é representado por uma letra e um número. A letra representa que tipo de andar que é. Veja os títulos acima e use a letra maiúscula de cada um. O número identifica cada andar de um tipo.\nCada transição entre andares deve ser representado por uma \"incidência\". Transições podem ser separadas por espaços e novas linhas. A transição é representada pelo nome do andar de saída, um hífen e o nome do andar de entrada.\nHá 2 andares especiais, \"N\" e \"B\". \"N\" representa o começo do Ato. Deve haver uma transição de \"N\" para cada um dos andares iniciais que você pode escolher quando começa um Ato. \"B\" representa o Chefe do Ato. Deve haver uma transição para o \"B\" para cada andar que leva ao Chefe do Andar.",
+  "mapNull": "Nenhum caminho para buscar.",
+  "mapRegexFail": "O grafo do mapa não está no formato esperado.",
   "merchant": "Merchant",
   "rest": "Rest",
   "title": "Busca de Caminho para Slay the Spire",
