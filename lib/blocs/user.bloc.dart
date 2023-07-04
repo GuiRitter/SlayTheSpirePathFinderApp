@@ -7,6 +7,7 @@ import 'package:slay_the_spire_path_finder_mobile/constants/settings.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/edge.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/floor.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/node.model.dart';
+import 'package:slay_the_spire_path_finder_mobile/models/path.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/result.model.dart';
 
 class UserBloc extends ChangeNotifier {
@@ -65,6 +66,9 @@ class UserBloc extends ChangeNotifier {
       number: null,
     );
 
+    bool hasNeow = false;
+    bool hasBoss = false;
+
     final edgeList = Settings.floorRegex
         .allMatches(
       graph,
@@ -81,6 +85,9 @@ class UserBloc extends ChangeNotifier {
               GraphRegexEnum.enteringBoss.tag,
             ) !=
             null;
+
+        hasNeow = hasNeow || isNeow;
+        hasBoss = hasBoss || isBoss;
 
         final exitingFloorModel = isNeow
             ? neowNode.floor
@@ -137,6 +144,20 @@ class UserBloc extends ChangeNotifier {
       },
     ).toList();
 
+    if (!hasNeow) {
+      return ResultModel(
+        status: ResultStatus.warning,
+        message: l10n.noNeow,
+      );
+    }
+
+    if (!hasBoss) {
+      return ResultModel(
+        status: ResultStatus.warning,
+        message: l10n.noBoss,
+      );
+    }
+
     for (int i = 0; i < (edgeList.length - 1); i++) {
       for (int j = i + 1; j < edgeList.length; j++) {
         if ((i != j) && (edgeList[i] == edgeList[j])) {
@@ -146,6 +167,73 @@ class UserBloc extends ChangeNotifier {
           );
         }
       }
+    }
+
+    final openPathList = <PathModel>[
+      PathModel(
+        firstNode: neowNode,
+      ),
+    ];
+
+    final closedPathList = <PathModel>[];
+
+    bool hasDoneSomething = true;
+
+    ResultModel? result;
+
+    while (hasDoneSomething && openPathList.isNotEmpty) {
+      hasDoneSomething = false;
+
+      final openPath = openPathList.removeAt(
+        0,
+      );
+
+      edgeList
+          .where(
+        (
+          wEdge,
+        ) =>
+            openPath.last == wEdge.exitingNode,
+      )
+          .forEach(
+        (
+          feEdge,
+        ) {
+          final newPath = openPath.extend(
+            node: feEdge.enteringNode,
+          );
+
+          if (newPath == null) {
+            result = ResultModel(
+              status: ResultStatus.warning,
+              message: l10n.pathHasCycle,
+            );
+          } else {
+            hasDoneSomething = true;
+
+            if (newPath.isClosed) {
+              closedPathList.add(
+                newPath,
+              );
+            } else {
+              openPathList.add(
+                newPath,
+              );
+            }
+          }
+        },
+      );
+
+      if (result != null) {
+        return result!;
+      }
+    }
+
+    if ((!hasDoneSomething) || openPathList.isNotEmpty) {
+      return ResultModel(
+        status: ResultStatus.warning,
+        message: l10n.pathStillOpen,
+      );
     }
 
     // TODO
