@@ -236,9 +236,31 @@ class UserBloc extends ChangeNotifier {
       );
     }
 
-    // TODO
+    closedPathList.sort();
 
-    _output = "Hello, World!";
+    _output = closedPathList.map(
+      (
+        mPath,
+      ) {
+        final count = mPath
+            .getFloorCountByKind()
+            .entries
+            .map(
+              (
+                entry,
+              ) =>
+                  "${l10n.floor(
+                        entry.key.name,
+                      ).toLowerCase()}: ${entry.value}",
+            )
+            .join(
+              ", ",
+            );
+        return "${mPath.toString()} ($count)";
+      },
+    ).join(
+      "\n",
+    );
     notifyListeners();
 
     return ResultModel(

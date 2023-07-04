@@ -1,7 +1,7 @@
 import 'package:slay_the_spire_path_finder_mobile/constants/floor.enum.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/node.model.dart';
 
-class PathModel {
+class PathModel implements Comparable<PathModel> {
   final List<NodeModel> _nodeList = <NodeModel>[];
 
   PathModel({
@@ -24,12 +24,17 @@ class PathModel {
     );
   }
 
+  @override
+  int get hashCode => _nodeList.hashCode;
+
   bool get isClosed =>
       _nodeList.isNotEmpty && _nodeList.last.floor.kind == FloorEnum.boss;
 
   bool get isOpen => !isClosed;
 
   NodeModel get last => _nodeList.last;
+
+  int get length => _nodeList.length;
 
   double get weight => _nodeList.fold(
         0,
@@ -39,6 +44,27 @@ class PathModel {
         ) =>
             previousValue + (element.floor.weight ?? 0),
       );
+
+  @override
+  bool operator ==(
+    Object other,
+  ) {
+    if (other is! PathModel) {
+      return false;
+    }
+    if (other.length != length) {
+      return false;
+    }
+    if (_nodeList.isEmpty) {
+      return true;
+    }
+    for (int i = 0; i < length; i++) {
+      if (other._nodeList[i] != _nodeList[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   /// Returns false if this node is already in this path.
   bool addNode(
@@ -55,6 +81,22 @@ class PathModel {
     return true;
   }
 
+  @override
+  int compareTo(
+    PathModel other,
+  ) {
+    if (weight > other.weight) {
+      return -1;
+    }
+    if (weight < other.weight) {
+      return 1;
+    }
+    return _nodeList.toString().compareTo(
+          other._nodeList.toString(),
+        );
+  }
+
+  /// Returns null if this node is already in this path.
   PathModel? extend({
     required NodeModel node,
   }) {
@@ -68,4 +110,38 @@ class PathModel {
       newNode: node,
     );
   }
+
+  Map<FloorEnum, int> getFloorCountByKind() {
+    final count = FloorEnum.valuesMid.fold(
+      <FloorEnum, int>{},
+      (
+        previousValue,
+        element,
+      ) =>
+          {
+        ...previousValue,
+        element: 0,
+      },
+    );
+
+    _nodeList
+        .where(
+      (
+        wNode,
+      ) =>
+          (wNode.floor.kind != FloorEnum.neow) &&
+          (wNode.floor.kind != FloorEnum.boss),
+    )
+        .forEach(
+      (
+        feNode,
+      ) {
+        count[feNode.floor.kind] = count[feNode.floor.kind]! + 1;
+      },
+    );
+    return count;
+  }
+
+  @override
+  String toString() => "$_nodeList (weight: $weight)";
 }
