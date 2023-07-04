@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/floor.enum.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/graph_regex.enum.dart';
+import 'package:slay_the_spire_path_finder_mobile/constants/result_status.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/settings.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/edge.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/floor.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/node.model.dart';
+import 'package:slay_the_spire_path_finder_mobile/models/result.model.dart';
 
 class UserBloc extends ChangeNotifier {
   String? _output;
@@ -17,7 +19,7 @@ class UserBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  findPaths({
+  ResultModel<void> findPaths({
     required String graph,
     required Map<FloorEnum, double> weightMap,
     required AppLocalizations l10n,
@@ -138,7 +140,10 @@ class UserBloc extends ChangeNotifier {
     for (int i = 0; i < (edgeList.length - 1); i++) {
       for (int j = i + 1; j < edgeList.length; j++) {
         if ((i != j) && (edgeList[i] == edgeList[j])) {
-          throw Exception(l10n.duplicate);
+          return ResultModel(
+            status: ResultStatus.warning,
+            message: l10n.duplicate,
+          );
         }
       }
     }
@@ -147,5 +152,9 @@ class UserBloc extends ChangeNotifier {
 
     _output = "Hello, World!";
     notifyListeners();
+
+    return ResultModel(
+      status: ResultStatus.success,
+    );
   }
 }

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:slay_the_spire_path_finder_mobile/blocs/user.bloc.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/floor.enum.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/settings.dart';
+import 'package:slay_the_spire_path_finder_mobile/main.dart';
 import 'package:slay_the_spire_path_finder_mobile/ui/shared/formatters/decimal_text_input.formatter.dart';
 
 class HomePage extends StatelessWidget {
@@ -212,7 +213,7 @@ class HomePage extends StatelessWidget {
       listen: false,
     );
 
-    userBloc.findPaths(
+    final result = userBloc.findPaths(
       graph: "${mapController.text}\n",
       weightMap: {
         FloorEnum.unknown: double.parse(unknownController.text),
@@ -224,6 +225,12 @@ class HomePage extends StatelessWidget {
       },
       l10n: l10n,
     );
+
+    if (result.message?.isNotEmpty ?? false) {
+      showSnackBar(
+        message: result.message,
+      );
+    }
   }
 
   String? onValidateMap({

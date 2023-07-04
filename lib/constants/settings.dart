@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Settings {
   // /// 2^31 - 1 on the web, 2^63 - 1 otherwise
   // static const intMaxSafe = -1 >>> 1;
@@ -12,4 +14,7 @@ class Settings {
   static RegExp mapRegex = RegExp(
     r'^(((N|([UMTREL]{1}[0-9]+))-(B|([UMTREL]{1}[0-9]+)))\s+)+$',
   );
+
+  static final GlobalKey<ScaffoldMessengerState> snackState =
+      GlobalKey<ScaffoldMessengerState>();
 }
