@@ -40,7 +40,9 @@ class MyApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
-          title: getTitle(context),
+          title: getTitle(
+            context: context,
+          ),
           theme: Theme.of(
             context,
           ).copyWith(
@@ -63,9 +65,9 @@ class MyApp extends StatelessWidget {
       );
 
   /// Only needed here
-  getTitle(
-    context,
-  ) {
+  getTitle({
+    required BuildContext context,
+  }) {
     var a = AppLocalizations.of(
       context,
     );
