@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slay_the_spire_path_finder_mobile/blocs/user.bloc.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/floor.enum.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/settings.dart';
@@ -12,24 +13,27 @@ class HomePage extends StatelessWidget {
     text:
         "N-E0 N-E1 N-E2 N-E3 N-E4\nE0-E5 E1-E6 E2-U0 E3-U1 E4-M0\nE5-U2 E5-E7 E6-E7 U0-E8 U1-U3 M0-U3\nU2-M1 E7-U4 E8-U4 U3-E9\nM1-U5 U4-U5 U4-E10 E9-E10 E9-U6\nU5-R0 U5-L0 E10-R1 U6-R2\nR0-U7 R0-E11 L0-E12 R1-L1 R1-E13 R2-E14\nU7-M2 E11-L2 E12-E15 L1-E15 E13-E16 E14-E17\nM2-T0 L2-T1 E15-T1 E15-T2 E16-T3 E17-T4\nT0-E18 T1-E18 T1-R3 T2-R3 T3-E19 T4-E19\nE18-E20 R3-E20 R3-U8 E19-L3 E19-E21\nE20-E22 E20-R4 U8-E23 L3-U9 E21-E24\nE22-E25 R4-U10 E23-E26 U9-U11 E24-U11\nE25-L4 E25-E27 U10-U12 E26-E28 U11-E29\nL4-R5 E27-R5 U12-R6 E28-R7 E29-R7 E29-R8\nR5-B R6-B R7-B R8-B",
   );
-  final unknownController = TextEditingController(
-    text: "1",
-  );
-  final merchantController = TextEditingController(
-    text: "1",
-  );
-  final treasureController = TextEditingController(
-    text: "1",
-  );
-  final restController = TextEditingController(
-    text: "1",
-  );
-  final enemyController = TextEditingController(
-    text: "1",
-  );
-  final eliteController = TextEditingController(
-    text: "1",
-  );
+
+  final controllerByEnum = {
+    FloorEnum.unknown: TextEditingController(
+      text: "1",
+    ),
+    FloorEnum.merchant: TextEditingController(
+      text: "1",
+    ),
+    FloorEnum.treasure: TextEditingController(
+      text: "1",
+    ),
+    FloorEnum.rest: TextEditingController(
+      text: "1",
+    ),
+    FloorEnum.enemy: TextEditingController(
+      text: "1",
+    ),
+    FloorEnum.elite: TextEditingController(
+      text: "1",
+    ),
+  };
 
   HomePage({
     super.key,
@@ -76,88 +80,107 @@ class HomePage extends StatelessWidget {
             key: formKey,
             child: Column(
               children: [
-                Wrap(
-                  spacing: fieldPadding,
-                  children: [
-                    IntrinsicWidth(
-                      child: TextFormField(
-                        inputFormatters: [
-                          DecimalTextInputFormatter(),
-                        ],
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: l10n.floor(FloorEnum.unknown.name),
-                          hintText: l10n.floor(FloorEnum.unknown.name),
+                FutureBuilder(
+                  future: getWeightList(),
+                  builder: (
+                    buildContext,
+                    snapshot,
+                  ) =>
+                      Wrap(
+                    spacing: fieldPadding,
+                    children: [
+                      IntrinsicWidth(
+                        child: TextFormField(
+                          inputFormatters: [
+                            DecimalTextInputFormatter(
+                              floorEnum: FloorEnum.unknown,
+                            ),
+                          ],
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: l10n.floor(FloorEnum.unknown.name),
+                            hintText: l10n.floor(FloorEnum.unknown.name),
+                          ),
+                          controller: controllerByEnum[FloorEnum.unknown],
                         ),
-                        controller: unknownController,
                       ),
-                    ),
-                    IntrinsicWidth(
-                      child: TextFormField(
-                        inputFormatters: [
-                          DecimalTextInputFormatter(),
-                        ],
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: l10n.floor(FloorEnum.merchant.name),
-                          hintText: l10n.floor(FloorEnum.merchant.name),
+                      IntrinsicWidth(
+                        child: TextFormField(
+                          inputFormatters: [
+                            DecimalTextInputFormatter(
+                              floorEnum: FloorEnum.merchant,
+                            ),
+                          ],
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: l10n.floor(FloorEnum.merchant.name),
+                            hintText: l10n.floor(FloorEnum.merchant.name),
+                          ),
+                          controller: controllerByEnum[FloorEnum.merchant],
                         ),
-                        controller: merchantController,
                       ),
-                    ),
-                    IntrinsicWidth(
-                      child: TextFormField(
-                        inputFormatters: [
-                          DecimalTextInputFormatter(),
-                        ],
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: l10n.floor(FloorEnum.treasure.name),
-                          hintText: l10n.floor(FloorEnum.treasure.name),
+                      IntrinsicWidth(
+                        child: TextFormField(
+                          inputFormatters: [
+                            DecimalTextInputFormatter(
+                              floorEnum: FloorEnum.treasure,
+                            ),
+                          ],
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: l10n.floor(FloorEnum.treasure.name),
+                            hintText: l10n.floor(FloorEnum.treasure.name),
+                          ),
+                          controller: controllerByEnum[FloorEnum.treasure],
                         ),
-                        controller: treasureController,
                       ),
-                    ),
-                    IntrinsicWidth(
-                      child: TextFormField(
-                        inputFormatters: [
-                          DecimalTextInputFormatter(),
-                        ],
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: l10n.floor(FloorEnum.rest.name),
-                          hintText: l10n.floor(FloorEnum.rest.name),
+                      IntrinsicWidth(
+                        child: TextFormField(
+                          inputFormatters: [
+                            DecimalTextInputFormatter(
+                              floorEnum: FloorEnum.rest,
+                            ),
+                          ],
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: l10n.floor(FloorEnum.rest.name),
+                            hintText: l10n.floor(FloorEnum.rest.name),
+                          ),
+                          controller: controllerByEnum[FloorEnum.rest],
                         ),
-                        controller: restController,
                       ),
-                    ),
-                    IntrinsicWidth(
-                      child: TextFormField(
-                        inputFormatters: [
-                          DecimalTextInputFormatter(),
-                        ],
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: l10n.floor(FloorEnum.enemy.name),
-                          hintText: l10n.floor(FloorEnum.enemy.name),
+                      IntrinsicWidth(
+                        child: TextFormField(
+                          inputFormatters: [
+                            DecimalTextInputFormatter(
+                              floorEnum: FloorEnum.enemy,
+                            ),
+                          ],
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: l10n.floor(FloorEnum.enemy.name),
+                            hintText: l10n.floor(FloorEnum.enemy.name),
+                          ),
+                          controller: controllerByEnum[FloorEnum.enemy],
                         ),
-                        controller: enemyController,
                       ),
-                    ),
-                    IntrinsicWidth(
-                      child: TextFormField(
-                        inputFormatters: [
-                          DecimalTextInputFormatter(),
-                        ],
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: l10n.floor(FloorEnum.elite.name),
-                          hintText: l10n.floor(FloorEnum.elite.name),
+                      IntrinsicWidth(
+                        child: TextFormField(
+                          inputFormatters: [
+                            DecimalTextInputFormatter(
+                              floorEnum: FloorEnum.elite,
+                            ),
+                          ],
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: l10n.floor(FloorEnum.elite.name),
+                            hintText: l10n.floor(FloorEnum.elite.name),
+                          ),
+                          controller: controllerByEnum[FloorEnum.elite],
                         ),
-                        controller: eliteController,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 Expanded(
                   child: Padding(
@@ -199,6 +222,20 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  Future<void> getWeightList() async {
+    final prefs = await SharedPreferences.getInstance();
+    // Rewritten from a forEach because of avoid_function_literals_in_foreach_calls
+    for (var element in FloorEnum.valuesMid) {
+      final weight = prefs.getDouble(
+        element.name,
+      );
+
+      if (weight != null) {
+        controllerByEnum[element]!.text = weight.toString();
+      }
+    }
+  }
+
   onFindPressed({
     required BuildContext context,
     required GlobalKey<FormState> formKey,
@@ -216,12 +253,24 @@ class HomePage extends StatelessWidget {
     final result = userBloc.findPaths(
       graph: "${mapController.text}\n",
       weightMap: {
-        FloorEnum.unknown: double.parse(unknownController.text),
-        FloorEnum.merchant: double.parse(merchantController.text),
-        FloorEnum.treasure: double.parse(treasureController.text),
-        FloorEnum.rest: double.parse(restController.text),
-        FloorEnum.enemy: double.parse(enemyController.text),
-        FloorEnum.elite: double.parse(eliteController.text),
+        FloorEnum.unknown: double.parse(
+          controllerByEnum[FloorEnum.unknown]!.text,
+        ),
+        FloorEnum.merchant: double.parse(
+          controllerByEnum[FloorEnum.merchant]!.text,
+        ),
+        FloorEnum.treasure: double.parse(
+          controllerByEnum[FloorEnum.treasure]!.text,
+        ),
+        FloorEnum.rest: double.parse(
+          controllerByEnum[FloorEnum.rest]!.text,
+        ),
+        FloorEnum.enemy: double.parse(
+          controllerByEnum[FloorEnum.enemy]!.text,
+        ),
+        FloorEnum.elite: double.parse(
+          controllerByEnum[FloorEnum.elite]!.text,
+        ),
       },
       l10n: l10n,
     );
