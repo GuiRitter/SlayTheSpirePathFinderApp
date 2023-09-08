@@ -65,21 +65,35 @@ class HomePage extends StatelessWidget {
       context,
     );
 
+    Widget? leading;
+    final actionList = <Widget>[];
+
+    if (userBloc.image == null) {
+      actionList.add(
+        IconButton(
+          onPressed: () => loadImage(
+            context: context,
+          ),
+          icon: const Icon(
+            Icons.add,
+          ),
+        ),
+      );
+    } else {
+      leading = BackButton(
+        onPressed: () => onBackPressed(
+          context: context,
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
+        leading: leading,
         title: Text(
           l10n.title,
         ),
-        actions: [
-          IconButton(
-            onPressed: () => loadImage(
-              context: context,
-            ),
-            icon: const Icon(
-              Icons.add,
-            ),
-          ),
-        ],
+        actions: actionList,
       ),
       body: SizedBox(
         height: mediaSize.height,
@@ -257,6 +271,17 @@ class HomePage extends StatelessWidget {
         );
       }
     }
+  }
+
+  onBackPressed({
+    required BuildContext context,
+  }) {
+    final userBloc = Provider.of<UserBloc>(
+      context,
+      listen: false,
+    );
+
+    userBloc.clearImage();
   }
 
   onFindPressed({

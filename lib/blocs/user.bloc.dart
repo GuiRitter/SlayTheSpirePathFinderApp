@@ -19,6 +19,11 @@ class UserBloc extends ChangeNotifier {
 
   String? get output => _output;
 
+  clearImage() {
+    _image = null;
+    notifyListeners();
+  }
+
   clearPaths() {
     _output = null;
     notifyListeners();
