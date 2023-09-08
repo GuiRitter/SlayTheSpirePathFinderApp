@@ -24,7 +24,6 @@ enum FloorEnum {
     name: "B",
   );
 
-  // TODO remove all static references to specific values; that is, use the list for everything
   static List<FloorEnum> get valuesMid => values
       .where(
         (

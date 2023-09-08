@@ -56,7 +56,6 @@ class MyApp extends StatelessWidget {
             ),
           ),
           // flutter gen-l10n
-          // TODO see if the names in the map Legend change in Portuguese
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           scaffoldMessengerKey: Settings.snackState,

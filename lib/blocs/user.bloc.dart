@@ -169,7 +169,7 @@ class UserBloc extends ChangeNotifier {
       }
     }
 
-    final openPathList = <PathModel>[
+    final processingPathList = <PathModel>[
       PathModel(
         firstNode: neowNode,
       ),
@@ -181,10 +181,10 @@ class UserBloc extends ChangeNotifier {
 
     ResultModel? result;
 
-    while (hasDoneSomething && openPathList.isNotEmpty) {
+    while (hasDoneSomething && processingPathList.isNotEmpty) {
       hasDoneSomething = false;
 
-      final openPath = openPathList.removeAt(
+      final openPath = processingPathList.removeAt(
         0,
       );
 
@@ -216,7 +216,7 @@ class UserBloc extends ChangeNotifier {
                 newPath,
               );
             } else {
-              openPathList.add(
+              processingPathList.add(
                 newPath,
               );
             }
@@ -229,7 +229,7 @@ class UserBloc extends ChangeNotifier {
       }
     }
 
-    if ((!hasDoneSomething) || openPathList.isNotEmpty) {
+    if ((!hasDoneSomething) || processingPathList.isNotEmpty) {
       return ResultModel(
         status: ResultStatus.warning,
         message: l10n.pathStillOpen,
