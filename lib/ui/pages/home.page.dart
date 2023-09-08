@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -60,11 +61,25 @@ class HomePage extends StatelessWidget {
 
     final formKey = GlobalKey<FormState>();
 
+    final userBloc = Provider.of<UserBloc>(
+      context,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
           l10n.title,
         ),
+        actions: [
+          IconButton(
+            onPressed: () => loadImage(
+              context: context,
+            ),
+            icon: const Icon(
+              Icons.add,
+            ),
+          ),
+        ],
       ),
       body: SizedBox(
         height: mediaSize.height,
@@ -182,38 +197,23 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: fieldPadding,
-                    ),
-                    child: TextFormField(
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        labelText: l10n.map,
-                        hintText: l10n.mapHint,
-                        // needs an extra -1
-                        hintMaxLines: Settings.intMax53 - 1,
-                      ),
-                      validator: (value) => onValidateMap(
-                        context: context,
-                        value: value,
-                      ),
-                      controller: mapController,
-                    ),
-                  ),
+                SizedBox.square(
+                  dimension: fieldPadding,
                 ),
-                ElevatedButton(
-                  onPressed: () => onFindPressed(
-                    context: context,
-                    formKey: formKey,
-                    l10n: l10n,
-                  ),
-                  child: Text(
-                    l10n.findBestPath,
-                  ),
-                )
+                (userBloc.image == null)
+                    ? Expanded(
+                        child: Center(
+                          child: Text(
+                            l10n.imagePlaceHolder,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : Expanded(
+                        child: SingleChildScrollView(
+                          child: userBloc.image!,
+                        ),
+                      ),
               ],
             ),
           ),
@@ -232,6 +232,29 @@ class HomePage extends StatelessWidget {
 
       if (weight != null) {
         controllerByEnum[element]!.text = weight.toString();
+      }
+    }
+  }
+
+  loadImage({
+    required BuildContext context,
+  }) async {
+    final result = await FilePicker.platform.pickFiles();
+
+    if ((result != null) && (result.files.single.bytes != null)) {
+      final image = Image.memory(
+        result.files.single.bytes!,
+      );
+
+      if (context.mounted) {
+        final userBloc = Provider.of<UserBloc>(
+          context,
+          listen: false,
+        );
+
+        userBloc.setImage(
+          image: image,
+        );
       }
     }
   }

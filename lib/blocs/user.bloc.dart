@@ -13,6 +13,10 @@ import 'package:slay_the_spire_path_finder_mobile/models/result.model.dart';
 class UserBloc extends ChangeNotifier {
   String? _output;
 
+  Image? _image;
+
+  Image? get image => _image;
+
   String? get output => _output;
 
   clearPaths() {
@@ -266,5 +270,12 @@ class UserBloc extends ChangeNotifier {
     return ResultModel(
       status: ResultStatus.success,
     );
+  }
+
+  setImage({
+    required Image image,
+  }) {
+    _image = image;
+    notifyListeners();
   }
 }
