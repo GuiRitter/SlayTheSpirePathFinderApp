@@ -88,6 +88,180 @@ class HomePage extends StatelessWidget {
       );
     }
 
+    final childList = [
+      IntrinsicWidth(
+        child: TextFormField(
+          inputFormatters: [
+            DecimalTextInputFormatter(
+              floorEnum: FloorEnum.unknown,
+            ),
+          ],
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: l10n.floorEnum(FloorEnum.unknown.name),
+            hintText: l10n.floorEnum(FloorEnum.unknown.name),
+          ),
+          controller: controllerByEnum[FloorEnum.unknown],
+        ),
+      ),
+      IntrinsicWidth(
+        child: TextFormField(
+          inputFormatters: [
+            DecimalTextInputFormatter(
+              floorEnum: FloorEnum.merchant,
+            ),
+          ],
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: l10n.floorEnum(FloorEnum.merchant.name),
+            hintText: l10n.floorEnum(FloorEnum.merchant.name),
+          ),
+          controller: controllerByEnum[FloorEnum.merchant],
+        ),
+      ),
+      IntrinsicWidth(
+        child: TextFormField(
+          inputFormatters: [
+            DecimalTextInputFormatter(
+              floorEnum: FloorEnum.treasure,
+            ),
+          ],
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: l10n.floorEnum(FloorEnum.treasure.name),
+            hintText: l10n.floorEnum(FloorEnum.treasure.name),
+          ),
+          controller: controllerByEnum[FloorEnum.treasure],
+        ),
+      ),
+      IntrinsicWidth(
+        child: TextFormField(
+          inputFormatters: [
+            DecimalTextInputFormatter(
+              floorEnum: FloorEnum.rest,
+            ),
+          ],
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: l10n.floorEnum(FloorEnum.rest.name),
+            hintText: l10n.floorEnum(FloorEnum.rest.name),
+          ),
+          controller: controllerByEnum[FloorEnum.rest],
+        ),
+      ),
+      IntrinsicWidth(
+        child: TextFormField(
+          inputFormatters: [
+            DecimalTextInputFormatter(
+              floorEnum: FloorEnum.enemy,
+            ),
+          ],
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: l10n.floorEnum(FloorEnum.enemy.name),
+            hintText: l10n.floorEnum(FloorEnum.enemy.name),
+          ),
+          controller: controllerByEnum[FloorEnum.enemy],
+        ),
+      ),
+      IntrinsicWidth(
+        child: TextFormField(
+          inputFormatters: [
+            DecimalTextInputFormatter(
+              floorEnum: FloorEnum.elite,
+            ),
+          ],
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: l10n.floorEnum(FloorEnum.elite.name),
+            hintText: l10n.floorEnum(FloorEnum.elite.name),
+          ),
+          controller: controllerByEnum[FloorEnum.elite],
+        ),
+      ),
+      IntrinsicWidth(
+        child: InputDecorator(
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            labelText: l10n.operation,
+          ),
+          child: DropdownButton<Operation>(
+            isDense: true,
+            value: userBloc.operation,
+            icon: const Icon(
+              Icons.arrow_drop_down,
+            ),
+            isExpanded: true,
+            onChanged: (
+              value,
+            ) =>
+                onOperationChanged(
+              context: context,
+              value: value!,
+            ),
+            items: Operation.values
+                .map(
+                  (
+                    operation,
+                  ) =>
+                      DropdownMenuItem<Operation>(
+                    value: operation,
+                    child: Text(
+                      l10n.operationEnum(
+                        operation.name,
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ),
+    ];
+
+    if (userBloc.operation == Operation.placeFloor) {
+      childList.add(
+        IntrinsicWidth(
+          child: InputDecorator(
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              labelText: l10n.floor,
+            ),
+            child: DropdownButton<FloorEnum>(
+              isDense: true,
+              value: userBloc.floor,
+              icon: const Icon(
+                Icons.arrow_drop_down,
+              ),
+              isExpanded: true,
+              onChanged: (
+                value,
+              ) =>
+                  onFloorChanged(
+                context: context,
+                value: value!,
+              ),
+              items: FloorEnum.values
+                  .map(
+                    (
+                      floor,
+                    ) =>
+                        DropdownMenuItem<FloorEnum>(
+                      value: floor,
+                      child: Text(
+                        l10n.floorEnum(
+                          floor.name,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: leading,
@@ -118,136 +292,7 @@ class HomePage extends StatelessWidget {
                   ) =>
                       Wrap(
                     spacing: fieldPadding,
-                    children: [
-                      IntrinsicWidth(
-                        child: TextFormField(
-                          inputFormatters: [
-                            DecimalTextInputFormatter(
-                              floorEnum: FloorEnum.unknown,
-                            ),
-                          ],
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: l10n.floor(FloorEnum.unknown.name),
-                            hintText: l10n.floor(FloorEnum.unknown.name),
-                          ),
-                          controller: controllerByEnum[FloorEnum.unknown],
-                        ),
-                      ),
-                      IntrinsicWidth(
-                        child: TextFormField(
-                          inputFormatters: [
-                            DecimalTextInputFormatter(
-                              floorEnum: FloorEnum.merchant,
-                            ),
-                          ],
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: l10n.floor(FloorEnum.merchant.name),
-                            hintText: l10n.floor(FloorEnum.merchant.name),
-                          ),
-                          controller: controllerByEnum[FloorEnum.merchant],
-                        ),
-                      ),
-                      IntrinsicWidth(
-                        child: TextFormField(
-                          inputFormatters: [
-                            DecimalTextInputFormatter(
-                              floorEnum: FloorEnum.treasure,
-                            ),
-                          ],
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: l10n.floor(FloorEnum.treasure.name),
-                            hintText: l10n.floor(FloorEnum.treasure.name),
-                          ),
-                          controller: controllerByEnum[FloorEnum.treasure],
-                        ),
-                      ),
-                      IntrinsicWidth(
-                        child: TextFormField(
-                          inputFormatters: [
-                            DecimalTextInputFormatter(
-                              floorEnum: FloorEnum.rest,
-                            ),
-                          ],
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: l10n.floor(FloorEnum.rest.name),
-                            hintText: l10n.floor(FloorEnum.rest.name),
-                          ),
-                          controller: controllerByEnum[FloorEnum.rest],
-                        ),
-                      ),
-                      IntrinsicWidth(
-                        child: TextFormField(
-                          inputFormatters: [
-                            DecimalTextInputFormatter(
-                              floorEnum: FloorEnum.enemy,
-                            ),
-                          ],
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: l10n.floor(FloorEnum.enemy.name),
-                            hintText: l10n.floor(FloorEnum.enemy.name),
-                          ),
-                          controller: controllerByEnum[FloorEnum.enemy],
-                        ),
-                      ),
-                      IntrinsicWidth(
-                        child: TextFormField(
-                          inputFormatters: [
-                            DecimalTextInputFormatter(
-                              floorEnum: FloorEnum.elite,
-                            ),
-                          ],
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: l10n.floor(FloorEnum.elite.name),
-                            hintText: l10n.floor(FloorEnum.elite.name),
-                          ),
-                          controller: controllerByEnum[FloorEnum.elite],
-                        ),
-                      ),
-                      IntrinsicWidth(
-                        child: InputDecorator(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            labelText: l10n.operation,
-                          ),
-                          child: DropdownButton<Operation>(
-                            isDense: true,
-                            value: userBloc.operation,
-                            icon: const Icon(
-                              Icons.arrow_drop_down,
-                            ),
-                            isExpanded: true,
-                            onChanged: (
-                              value,
-                            ) =>
-                                onOperationChanged(
-                              context: context,
-                              value: value!,
-                            ),
-                            items: Operation.values
-                                .map(
-                                  (
-                                    operation,
-                                  ) =>
-                                      DropdownMenuItem<Operation>(
-                                    value: operation,
-                                    child: Text(
-                                      l10n.operationEnum(
-                                        operation.name,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                          ),
-                        ),
-                      ),
-                    ],
+                    children: childList,
                   ),
                 ),
                 SizedBox.square(
@@ -367,6 +412,20 @@ class HomePage extends StatelessWidget {
         message: result.message,
       );
     }
+  }
+
+  onFloorChanged({
+    required BuildContext context,
+    required FloorEnum value,
+  }) {
+    final userBloc = Provider.of<UserBloc>(
+      context,
+      listen: false,
+    );
+
+    userBloc.setFloor(
+      floor: value,
+    );
   }
 
   onOperationChanged({

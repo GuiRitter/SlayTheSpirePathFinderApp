@@ -18,11 +18,15 @@ class UserBloc extends ChangeNotifier {
 
   Operation _operation = Operation.placeFloor;
 
+  FloorEnum _floor = FloorEnum.neow;
+
+  FloorEnum get floor => _floor;
+
   Image? get image => _image;
 
-  String? get output => _output;
-
   Operation get operation => _operation;
+
+  String? get output => _output;
 
   clearImage() {
     _image = null;
@@ -263,7 +267,7 @@ class UserBloc extends ChangeNotifier {
               (
                 entry,
               ) =>
-                  "${l10n.floor(
+                  "${l10n.floorEnum(
                         entry.key.name,
                       ).toLowerCase()}: ${entry.value}",
             )
@@ -280,6 +284,13 @@ class UserBloc extends ChangeNotifier {
     return ResultModel(
       status: ResultStatus.success,
     );
+  }
+
+  setFloor({
+    required FloorEnum floor,
+  }) {
+    _floor = floor;
+    notifyListeners();
   }
 
   setImage({
