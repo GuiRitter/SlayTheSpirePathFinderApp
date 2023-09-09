@@ -22,7 +22,7 @@ class FloorWidgetModel {
       return false;
     }
     return (kind == other.kind) &&
-        ((x - other.x).abs() > 8) &&
-        ((y - other.y).abs() > 8);
+        ((x - other.x).abs() < 16) &&
+        ((y - other.y).abs() < 16);
   }
 }

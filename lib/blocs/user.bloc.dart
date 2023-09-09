@@ -33,22 +33,9 @@ class UserBloc extends ChangeNotifier {
 
   get output => _output;
 
-  addFloorWidgetModel({
-    required double x,
-    required double y,
-  }) {
-    _floorWidgetModelList.add(
-      FloorWidgetModel(
-        kind: _floor,
-        x: x,
-        y: y,
-      ),
-    );
-    notifyListeners();
-  }
-
   clearImage() {
     _image = null;
+    _floorWidgetModelList.clear();
     notifyListeners();
   }
 
@@ -303,6 +290,35 @@ class UserBloc extends ChangeNotifier {
     return ResultModel(
       status: ResultStatus.success,
     );
+  }
+
+  placeFloorWidgetModel({
+    required double x,
+    required double y,
+  }) {
+    final floorWidgetModel = FloorWidgetModel(
+      kind: _floor,
+      x: x,
+      y: y,
+    );
+
+    if (_floorWidgetModelList.contains(
+      floorWidgetModel,
+    )) {
+      _floorWidgetModelList.remove(
+        floorWidgetModel,
+      );
+    } else {
+      _floorWidgetModelList.add(
+        FloorWidgetModel(
+          kind: _floor,
+          x: x,
+          y: y,
+        ),
+      );
+    }
+
+    notifyListeners();
   }
 
   setFloor({

@@ -506,7 +506,7 @@ class HomePage extends StatelessWidget {
 
     final size = (key.currentContext!.findRenderObject()! as RenderBox).size;
 
-    userBloc.addFloorWidgetModel(
+    userBloc.placeFloorWidgetModel(
       x: tapUpDetails.localPosition.dx - (size.width / 2),
       y: tapUpDetails.localPosition.dy - (size.height / 2),
     );
