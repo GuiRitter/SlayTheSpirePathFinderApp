@@ -309,7 +309,13 @@ class HomePage extends StatelessWidget {
                       )
                     : Expanded(
                         child: SingleChildScrollView(
-                          child: userBloc.image!,
+                          child: GestureDetector(
+                            onTapUp: (
+                              tapUpDetails,
+                            ) =>
+                                onImageTapped(tapUpDetails),
+                            child: userBloc.image!,
+                          ),
                         ),
                       ),
               ],
@@ -425,6 +431,16 @@ class HomePage extends StatelessWidget {
 
     userBloc.setFloor(
       floor: value,
+    );
+  }
+
+  onImageTapped(TapUpDetails tapUpDetails) {
+    print(
+      {
+        "globalPosition": tapUpDetails.globalPosition,
+        "kind": tapUpDetails.kind,
+        "localPosition": tapUpDetails.localPosition,
+      },
     );
   }
 
