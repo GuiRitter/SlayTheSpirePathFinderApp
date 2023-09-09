@@ -10,6 +10,8 @@
   "mapRegexFail": "O grafo do mapa não está no formato esperado.",
   "noBoss": "O mapa não contém pontos de fim.",
   "noNeow": "O mapa não contém pontos de início.",
+  "operation": "Operação",
+  "operationEnum": "{value, select, placeFloor{Colocar andar} toggleTransition{Alternar transições} other{{value}}}",
   "outputHint": "Os caminhos encontrados serão exibidos aqui, um por linha, ordenados do melhor, acima, para o pior, abaixo.\nCada caminho exibe os andares em sequência, o peso total e quantos tem de cada andar.",
   "outputLabel": "Caminhos do melhor ao pior",
   "pathHasCycle": "Um ciclo foi detectado no mapa. Verifique as transições.",

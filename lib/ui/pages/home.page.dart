@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slay_the_spire_path_finder_mobile/blocs/user.bloc.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/floor.enum.dart';
+import 'package:slay_the_spire_path_finder_mobile/constants/operation.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/settings.dart';
 import 'package:slay_the_spire_path_finder_mobile/main.dart';
 import 'package:slay_the_spire_path_finder_mobile/ui/shared/formatters/decimal_text_input.formatter.dart';
@@ -208,6 +209,44 @@ class HomePage extends StatelessWidget {
                           controller: controllerByEnum[FloorEnum.elite],
                         ),
                       ),
+                      IntrinsicWidth(
+                        child: InputDecorator(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            labelText: l10n.operation,
+                          ),
+                          child: DropdownButton<Operation>(
+                            isDense: true,
+                            value: userBloc.operation,
+                            icon: const Icon(
+                              Icons.arrow_drop_down,
+                            ),
+                            isExpanded: true,
+                            onChanged: (
+                              value,
+                            ) =>
+                                onOperationChanged(
+                              context: context,
+                              value: value!,
+                            ),
+                            items: Operation.values
+                                .map(
+                                  (
+                                    operation,
+                                  ) =>
+                                      DropdownMenuItem<Operation>(
+                                    value: operation,
+                                    child: Text(
+                                      l10n.operationEnum(
+                                        operation.name,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -328,6 +367,20 @@ class HomePage extends StatelessWidget {
         message: result.message,
       );
     }
+  }
+
+  onOperationChanged({
+    required BuildContext context,
+    required Operation value,
+  }) {
+    final userBloc = Provider.of<UserBloc>(
+      context,
+      listen: false,
+    );
+
+    userBloc.setOperation(
+      operation: value,
+    );
   }
 
   String? onValidateMap({

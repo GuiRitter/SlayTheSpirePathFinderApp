@@ -10,6 +10,8 @@
   "mapRegexFail": "The map graph is not in the expected format.",
   "noBoss": "The map does not contain ending points.",
   "noNeow": "The map does not contain starting points.",
+  "operation": "Operation",
+  "operationEnum": "{value, select, placeFloor{Place floor} toggleTransition{Toggle transitions} other{{value}}}",
   "outputHint": "The paths found will be displayed here, one per line, sorted from best, above, to worst, below.\nEach path shows the floors in sequence, the total weight and how many of each floors are.",
   "outputLabel": "Paths from best to worst",
   "pathHasCycle": "A cycle has been detected in the map. Check the transitions.",

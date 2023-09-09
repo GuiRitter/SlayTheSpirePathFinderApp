@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/floor.enum.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/graph_regex.enum.dart';
+import 'package:slay_the_spire_path_finder_mobile/constants/operation.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/result_status.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/settings.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/edge.model.dart';
@@ -15,9 +16,13 @@ class UserBloc extends ChangeNotifier {
 
   Image? _image;
 
+  Operation _operation = Operation.placeFloor;
+
   Image? get image => _image;
 
   String? get output => _output;
+
+  Operation get operation => _operation;
 
   clearImage() {
     _image = null;
@@ -281,6 +286,13 @@ class UserBloc extends ChangeNotifier {
     required Image image,
   }) {
     _image = image;
+    notifyListeners();
+  }
+
+  setOperation({
+    required Operation operation,
+  }) {
+    _operation = operation;
     notifyListeners();
   }
 }
