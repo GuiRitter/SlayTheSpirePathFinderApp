@@ -442,6 +442,12 @@ class HomePage extends StatelessWidget {
         "localPosition": tapUpDetails.localPosition,
       },
     );
+    showSnackBar(
+        message: {
+      "globalPosition": tapUpDetails.globalPosition,
+      "kind": tapUpDetails.kind,
+      "localPosition": tapUpDetails.localPosition,
+    }.toString());
   }
 
   onOperationChanged({
