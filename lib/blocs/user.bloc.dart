@@ -23,15 +23,29 @@ class UserBloc extends ChangeNotifier {
 
   final _floorWidgetModelList = <FloorWidgetModel>[];
 
-  get floor => _floor;
+  FloorWidgetModel? _floorWidgetModel0;
 
-  get floorWidgetModelList => _floorWidgetModelList;
+  FloorWidgetModel? _floorWidgetModel1;
 
-  get image => _image;
+  FloorEnum get floor => _floor;
 
-  get operation => _operation;
+  FloorWidgetModel? get floorWidgetModel0 => _floorWidgetModel0;
 
-  get output => _output;
+  FloorWidgetModel? get floorWidgetModel1 => _floorWidgetModel1;
+
+  List<FloorWidgetModel> get floorWidgetModelList => _floorWidgetModelList;
+
+  Image? get image => _image;
+
+  Operation get operation => _operation;
+
+  String? get output => _output;
+
+  isFocused({
+    required FloorWidgetModel floorWidgetModel,
+  }) =>
+      (floorWidgetModel == floorWidgetModel0) ||
+      (floorWidgetModel == floorWidgetModel1);
 
   clearImage() {
     _image = null;
@@ -292,35 +306,6 @@ class UserBloc extends ChangeNotifier {
     );
   }
 
-  placeFloorWidgetModel({
-    required double x,
-    required double y,
-  }) {
-    final floorWidgetModel = FloorWidgetModel(
-      kind: _floor,
-      x: x,
-      y: y,
-    );
-
-    if (_floorWidgetModelList.contains(
-      floorWidgetModel,
-    )) {
-      _floorWidgetModelList.remove(
-        floorWidgetModel,
-      );
-    } else {
-      _floorWidgetModelList.add(
-        FloorWidgetModel(
-          kind: _floor,
-          x: x,
-          y: y,
-        ),
-      );
-    }
-
-    notifyListeners();
-  }
-
   setFloor({
     required FloorEnum floor,
   }) {
@@ -339,6 +324,69 @@ class UserBloc extends ChangeNotifier {
     required Operation operation,
   }) {
     _operation = operation;
+    notifyListeners();
+  }
+
+  treatFloorWidgetAtLocation({
+    required double x,
+    required double y,
+  }) {
+    final floorWidgetModel = FloorWidgetModel(
+      kind: _floor,
+      x: x,
+      y: y,
+    );
+
+    switch (_operation) {
+      case Operation.placeFloor:
+        if (_floorWidgetModelList.contains(
+          floorWidgetModel,
+        )) {
+          _floorWidgetModelList.remove(
+            floorWidgetModel,
+          );
+        } else {
+          _floorWidgetModelList.add(
+            FloorWidgetModel(
+              kind: _floor,
+              x: x,
+              y: y,
+            ),
+          );
+        }
+
+        break;
+      case Operation.toggleTransition:
+        if (!_floorWidgetModelList.contains(
+          floorWidgetModel,
+        )) {
+          return;
+        }
+
+        if ((_floorWidgetModel0 == null) && (_floorWidgetModel1 == null)) {
+          _floorWidgetModel0 = floorWidgetModel;
+        } else if ((_floorWidgetModel0 != null) &&
+            (_floorWidgetModel1 == null)) {
+          if (_floorWidgetModel0 == floorWidgetModel) {
+            _floorWidgetModel0 = null;
+          } else {
+            _floorWidgetModel1 = floorWidgetModel;
+          }
+        } else {
+          if (_floorWidgetModel0 == floorWidgetModel) {
+            _floorWidgetModel0 = _floorWidgetModel1;
+            _floorWidgetModel1 = null;
+          } else if (_floorWidgetModel1 == floorWidgetModel) {
+            _floorWidgetModel1 = null;
+          } else {
+            _floorWidgetModel0 = _floorWidgetModel1;
+            _floorWidgetModel1 = floorWidgetModel;
+          }
+        }
+
+        break;
+    }
+
     notifyListeners();
   }
 }

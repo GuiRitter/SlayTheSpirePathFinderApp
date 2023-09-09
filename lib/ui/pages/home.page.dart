@@ -49,7 +49,14 @@ class HomePage extends StatelessWidget {
     ),
   );
 
-  final floorWidgetStyle = const TextStyle(
+  final floorWidgetBlurStyle = const TextStyle(
+    color: Colors.white,
+    fontSize: 40,
+    fontWeight: FontWeight.bold,
+  );
+
+  final floorWidgetFocusStyle = const TextStyle(
+    color: Colors.black,
     fontSize: 40,
     fontWeight: FontWeight.bold,
   );
@@ -368,7 +375,11 @@ class HomePage extends StatelessWidget {
                                     top: floorWidgetModel.y,
                                     child: Text(
                                       floorWidgetModel.kind.name,
-                                      style: floorWidgetStyle,
+                                      style: userBloc.isFocused(
+                                              floorWidgetModel:
+                                                  floorWidgetModel)
+                                          ? floorWidgetFocusStyle
+                                          : floorWidgetBlurStyle,
                                     ),
                                   ),
                                 )
@@ -506,7 +517,7 @@ class HomePage extends StatelessWidget {
 
     final size = (key.currentContext!.findRenderObject()! as RenderBox).size;
 
-    userBloc.placeFloorWidgetModel(
+    userBloc.treatFloorWidgetAtLocation(
       x: tapUpDetails.localPosition.dx - (size.width / 2),
       y: tapUpDetails.localPosition.dy - (size.height / 2),
     );
