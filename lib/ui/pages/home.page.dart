@@ -37,6 +37,25 @@ class HomePage extends StatelessWidget {
     ),
   };
 
+  final floorWidgetKeyByEnum = Map.fromEntries(
+    FloorEnum.values.map(
+      (
+        floorEnum,
+      ) =>
+          MapEntry<FloorEnum, GlobalKey>(
+        floorEnum,
+        GlobalKey(),
+      ),
+    ),
+  );
+
+  final floorWidgetStyle = const TextStyle(
+    fontSize: 40,
+    fontWeight: FontWeight.bold,
+  );
+
+  final scrollKey = const PageStorageKey("PageStorageKey");
+
   HomePage({
     super.key,
   });
@@ -88,7 +107,7 @@ class HomePage extends StatelessWidget {
       );
     }
 
-    final childList = [
+    final childList = <Widget>[
       IntrinsicWidth(
         child: TextFormField(
           inputFormatters: [
@@ -262,6 +281,25 @@ class HomePage extends StatelessWidget {
       );
     }
 
+    childList.addAll(
+      FloorEnum.values.map(
+        (
+          floorEnum,
+        ) =>
+            Offstage(
+          offstage: true,
+          child: Text(
+            floorEnum.name,
+            key: floorWidgetKeyByEnum[floorEnum],
+            style: const TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         leading: leading,
@@ -309,12 +347,33 @@ class HomePage extends StatelessWidget {
                       )
                     : Expanded(
                         child: SingleChildScrollView(
+                          key: scrollKey,
                           child: GestureDetector(
                             onTapUp: (
                               tapUpDetails,
                             ) =>
-                                onImageTapped(tapUpDetails),
-                            child: userBloc.image!,
+                                onImageTapped(
+                              context: context,
+                              tapUpDetails: tapUpDetails,
+                            ),
+                            child: Stack(
+                              children: [
+                                userBloc.image!,
+                                ...userBloc.floorWidgetModelList.map(
+                                  (
+                                    floorWidgetModel,
+                                  ) =>
+                                      Positioned(
+                                    left: floorWidgetModel.x,
+                                    top: floorWidgetModel.y,
+                                    child: Text(
+                                      floorWidgetModel.kind.name,
+                                      style: floorWidgetStyle,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -434,20 +493,23 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  onImageTapped(TapUpDetails tapUpDetails) {
-    print(
-      {
-        "globalPosition": tapUpDetails.globalPosition,
-        "kind": tapUpDetails.kind,
-        "localPosition": tapUpDetails.localPosition,
-      },
+  onImageTapped({
+    required BuildContext context,
+    required TapUpDetails tapUpDetails,
+  }) {
+    final userBloc = Provider.of<UserBloc>(
+      context,
+      listen: false,
     );
-    showSnackBar(
-        message: {
-      "globalPosition": tapUpDetails.globalPosition,
-      "kind": tapUpDetails.kind,
-      "localPosition": tapUpDetails.localPosition,
-    }.toString());
+
+    final key = floorWidgetKeyByEnum[userBloc.floor]!;
+
+    final size = (key.currentContext!.findRenderObject()! as RenderBox).size;
+
+    userBloc.addFloorWidgetModel(
+      x: tapUpDetails.localPosition.dx - (size.width / 2),
+      y: tapUpDetails.localPosition.dy - (size.height / 2),
+    );
   }
 
   onOperationChanged({

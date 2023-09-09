@@ -7,6 +7,7 @@ import 'package:slay_the_spire_path_finder_mobile/constants/result_status.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/settings.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/edge.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/floor.model.dart';
+import 'package:slay_the_spire_path_finder_mobile/models/floor_widget.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/node.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/path.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/result.model.dart';
@@ -16,17 +17,35 @@ class UserBloc extends ChangeNotifier {
 
   Image? _image;
 
-  Operation _operation = Operation.placeFloor;
+  var _operation = Operation.placeFloor;
 
-  FloorEnum _floor = FloorEnum.neow;
+  var _floor = FloorEnum.neow;
 
-  FloorEnum get floor => _floor;
+  final _floorWidgetModelList = <FloorWidgetModel>[];
 
-  Image? get image => _image;
+  get floor => _floor;
 
-  Operation get operation => _operation;
+  get floorWidgetModelList => _floorWidgetModelList;
 
-  String? get output => _output;
+  get image => _image;
+
+  get operation => _operation;
+
+  get output => _output;
+
+  addFloorWidgetModel({
+    required double x,
+    required double y,
+  }) {
+    _floorWidgetModelList.add(
+      FloorWidgetModel(
+        kind: _floor,
+        x: x,
+        y: y,
+      ),
+    );
+    notifyListeners();
+  }
 
   clearImage() {
     _image = null;
