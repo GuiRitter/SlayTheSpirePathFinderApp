@@ -21,8 +21,6 @@ class FloorWidgetModel {
     if (other is! FloorWidgetModel) {
       return false;
     }
-    return (kind == other.kind) &&
-        ((x - other.x).abs() < 16) &&
-        ((y - other.y).abs() < 16);
+    return ((x - other.x).abs() < 16) && ((y - other.y).abs() < 16);
   }
 }

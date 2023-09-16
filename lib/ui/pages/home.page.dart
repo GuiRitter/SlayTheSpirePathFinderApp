@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -8,9 +10,43 @@ import 'package:slay_the_spire_path_finder_mobile/constants/floor.enum.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/operation.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/settings.dart';
 import 'package:slay_the_spire_path_finder_mobile/main.dart';
+import 'package:slay_the_spire_path_finder_mobile/models/floor_widget.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/ui/shared/formatters/decimal_text_input.formatter.dart';
 
+const boxDecoration = BoxDecoration(
+  gradient: LinearGradient(
+    begin: Alignment.centerRight,
+    end: Alignment.centerLeft,
+    stops: [
+      0,
+      0.2,
+      0.8,
+      1,
+    ],
+    colors: [
+      Colors.transparent,
+      Colors.white,
+      Colors.white,
+      Colors.transparent,
+    ],
+  ),
+);
+
 class HomePage extends StatelessWidget {
+  static final floorWidgetSizeByEnum = <FloorEnum, Size>{};
+
+  static const floorWidgetBlurStyle = TextStyle(
+    color: Colors.white,
+    fontSize: Settings.floorWidgetFontSize,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const floorWidgetFocusStyle = TextStyle(
+    color: Colors.black,
+    fontSize: Settings.floorWidgetFontSize,
+    fontWeight: FontWeight.bold,
+  );
+
   final mapController = TextEditingController(
     text:
         "N-E0 N-E1 N-E2 N-E3 N-E4\nE0-E5 E1-E6 E2-U0 E3-U1 E4-M0\nE5-U2 E5-E7 E6-E7 U0-E8 U1-U3 M0-U3\nU2-M1 E7-U4 E8-U4 U3-E9\nM1-U5 U4-U5 U4-E10 E9-E10 E9-U6\nU5-R0 U5-L0 E10-R1 U6-R2\nR0-U7 R0-E11 L0-E12 R1-L1 R1-E13 R2-E14\nU7-M2 E11-L2 E12-E15 L1-E15 E13-E16 E14-E17\nM2-T0 L2-T1 E15-T1 E15-T2 E16-T3 E17-T4\nT0-E18 T1-E18 T1-R3 T2-R3 T3-E19 T4-E19\nE18-E20 R3-E20 R3-U8 E19-L3 E19-E21\nE20-E22 E20-R4 U8-E23 L3-U9 E21-E24\nE22-E25 R4-U10 E23-E26 U9-U11 E24-U11\nE25-L4 E25-E27 U10-U12 E26-E28 U11-E29\nL4-R5 E27-R5 U12-R6 E28-R7 E29-R7 E29-R8\nR5-B R6-B R7-B R8-B",
@@ -47,18 +83,6 @@ class HomePage extends StatelessWidget {
         GlobalKey(),
       ),
     ),
-  );
-
-  final floorWidgetBlurStyle = const TextStyle(
-    color: Colors.white,
-    fontSize: 40,
-    fontWeight: FontWeight.bold,
-  );
-
-  final floorWidgetFocusStyle = const TextStyle(
-    color: Colors.black,
-    fontSize: 40,
-    fontWeight: FontWeight.bold,
   );
 
   final scrollKey = const PageStorageKey("PageStorageKey");
@@ -299,7 +323,7 @@ class HomePage extends StatelessWidget {
             floorEnum.name,
             key: floorWidgetKeyByEnum[floorEnum],
             style: const TextStyle(
-              fontSize: 40,
+              fontSize: Settings.floorWidgetFontSize,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -366,6 +390,65 @@ class HomePage extends StatelessWidget {
                             child: Stack(
                               children: [
                                 userBloc.image!,
+                                ...userBloc.transitionWidgetModelList.map(
+                                  (
+                                    transitionWidgetModel,
+                                  ) {
+                                    final distance = sqrt(
+                                      pow(
+                                            transitionWidgetModel
+                                                    .floorWidgetModel0.x -
+                                                transitionWidgetModel
+                                                    .floorWidgetModel1.x,
+                                            2,
+                                          ) +
+                                          pow(
+                                            transitionWidgetModel
+                                                    .floorWidgetModel0.y -
+                                                transitionWidgetModel
+                                                    .floorWidgetModel1.y,
+                                            2,
+                                          ),
+                                    );
+
+                                    final center0 = getPoint(
+                                      floorWidgetModel: transitionWidgetModel
+                                          .floorWidgetModel0,
+                                    );
+
+                                    final center1 = getPoint(
+                                      floorWidgetModel: transitionWidgetModel
+                                          .floorWidgetModel1,
+                                    );
+
+                                    final center = Point(
+                                      (center0.x + center1.x) / 2,
+                                      (center0.y + center1.y) / 2,
+                                    );
+
+                                    final angle = atan2(center1.y - center0.y,
+                                        center1.x - center0.x);
+
+                                    return Positioned(
+                                      left: center.x - (distance / 2),
+                                      top: center.y -
+                                          Settings.materialBaselineGridSizeHalf,
+                                      child: Transform.rotate(
+                                        angle: angle,
+                                        alignment: Alignment.center,
+                                        child: SizedBox.fromSize(
+                                          size: Size(
+                                            distance,
+                                            Settings.materialBaselineGridSize,
+                                          ),
+                                          child: Container(
+                                            decoration: boxDecoration,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
                                 ...userBloc.floorWidgetModelList.map(
                                   (
                                     floorWidgetModel,
@@ -396,6 +479,17 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  Point<double> getPoint({
+    required FloorWidgetModel floorWidgetModel,
+  }) {
+    return Point(
+      floorWidgetModel.x +
+          ((floorWidgetSizeByEnum[floorWidgetModel.kind]!.width) / 2),
+      floorWidgetModel.y +
+          ((floorWidgetSizeByEnum[floorWidgetModel.kind]!.height) / 2),
+    );
+  }
+
   Future<void> getWeightList() async {
     final prefs = await SharedPreferences.getInstance();
     // Rewritten from a forEach because of avoid_function_literals_in_foreach_calls
@@ -413,6 +507,11 @@ class HomePage extends StatelessWidget {
   loadImage({
     required BuildContext context,
   }) async {
+    final userBloc = Provider.of<UserBloc>(
+      context,
+      listen: false,
+    );
+
     final result = await FilePicker.platform.pickFiles();
 
     if ((result != null) && (result.files.single.bytes != null)) {
@@ -420,15 +519,24 @@ class HomePage extends StatelessWidget {
         result.files.single.bytes!,
       );
 
-      if (context.mounted) {
-        final userBloc = Provider.of<UserBloc>(
-          context,
-          listen: false,
-        );
+      userBloc.setImage(
+        image: image,
+      );
 
-        userBloc.setImage(
-          image: image,
-        );
+      if (floorWidgetSizeByEnum.isEmpty) {
+        // Rewritten from a forEach because of avoid_function_literals_in_foreach_calls
+        for (var floorEnum in FloorEnum.values) {
+          final key = floorWidgetKeyByEnum[floorEnum]!;
+
+          if (context.mounted) {
+            final size =
+                (key.currentContext!.findRenderObject()! as RenderBox).size;
+
+            floorWidgetSizeByEnum[floorEnum] = Size.copy(
+              size,
+            );
+          }
+        }
       }
     }
   }
@@ -513,9 +621,7 @@ class HomePage extends StatelessWidget {
       listen: false,
     );
 
-    final key = floorWidgetKeyByEnum[userBloc.floor]!;
-
-    final size = (key.currentContext!.findRenderObject()! as RenderBox).size;
+    final size = floorWidgetSizeByEnum[userBloc.floor]!;
 
     userBloc.treatFloorWidgetAtLocation(
       x: tapUpDetails.localPosition.dx - (size.width / 2),

@@ -17,4 +17,10 @@ class Settings {
 
   static final GlobalKey<ScaffoldMessengerState> snackState =
       GlobalKey<ScaffoldMessengerState>();
+
+  static const floorWidgetFontSize = 40.0;
+
+  static const double materialBaselineGridSize = 8;
+
+  static const materialBaselineGridSizeHalf = materialBaselineGridSize / 2;
 }

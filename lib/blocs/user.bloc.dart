@@ -11,6 +11,7 @@ import 'package:slay_the_spire_path_finder_mobile/models/floor_widget.model.dart
 import 'package:slay_the_spire_path_finder_mobile/models/node.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/path.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/result.model.dart';
+import 'package:slay_the_spire_path_finder_mobile/models/transition_widget.model.dart';
 
 class UserBloc extends ChangeNotifier {
   String? _output;
@@ -23,33 +24,28 @@ class UserBloc extends ChangeNotifier {
 
   final _floorWidgetModelList = <FloorWidgetModel>[];
 
-  FloorWidgetModel? _floorWidgetModel0;
+  final _transitionWidgetModelList = <TransitionWidgetModel>[];
 
-  FloorWidgetModel? _floorWidgetModel1;
+  FloorWidgetModel? _floorWidgetModelSelected;
 
   FloorEnum get floor => _floor;
 
-  FloorWidgetModel? get floorWidgetModel0 => _floorWidgetModel0;
-
-  FloorWidgetModel? get floorWidgetModel1 => _floorWidgetModel1;
+  FloorWidgetModel? get floorWidgetModelSelected => _floorWidgetModelSelected;
 
   List<FloorWidgetModel> get floorWidgetModelList => _floorWidgetModelList;
-
   Image? get image => _image;
 
   Operation get operation => _operation;
 
   String? get output => _output;
 
-  isFocused({
-    required FloorWidgetModel floorWidgetModel,
-  }) =>
-      (floorWidgetModel == floorWidgetModel0) ||
-      (floorWidgetModel == floorWidgetModel1);
+  List<TransitionWidgetModel> get transitionWidgetModelList =>
+      _transitionWidgetModelList;
 
   clearImage() {
     _image = null;
     _floorWidgetModelList.clear();
+    _transitionWidgetModelList.clear();
     notifyListeners();
   }
 
@@ -306,6 +302,11 @@ class UserBloc extends ChangeNotifier {
     );
   }
 
+  isFocused({
+    required FloorWidgetModel floorWidgetModel,
+  }) =>
+      (floorWidgetModel == _floorWidgetModelSelected);
+
   setFloor({
     required FloorEnum floor,
   }) {
@@ -324,6 +325,11 @@ class UserBloc extends ChangeNotifier {
     required Operation operation,
   }) {
     _operation = operation;
+
+    if (operation != Operation.toggleTransition) {
+      _floorWidgetModelSelected = null;
+    }
+
     notifyListeners();
   }
 
@@ -331,7 +337,7 @@ class UserBloc extends ChangeNotifier {
     required double x,
     required double y,
   }) {
-    final floorWidgetModel = FloorWidgetModel(
+    var floorWidgetModelTapped = FloorWidgetModel(
       kind: _floor,
       x: x,
       y: y,
@@ -340,10 +346,20 @@ class UserBloc extends ChangeNotifier {
     switch (_operation) {
       case Operation.placeFloor:
         if (_floorWidgetModelList.contains(
-          floorWidgetModel,
+          floorWidgetModelTapped,
         )) {
           _floorWidgetModelList.remove(
-            floorWidgetModel,
+            floorWidgetModelTapped,
+          );
+
+          _transitionWidgetModelList.removeWhere(
+            (
+              transitionWidgetModel,
+            ) =>
+                (floorWidgetModelTapped ==
+                    transitionWidgetModel.floorWidgetModel0) ||
+                (floorWidgetModelTapped ==
+                    transitionWidgetModel.floorWidgetModel1),
           );
         } else {
           _floorWidgetModelList.add(
@@ -357,30 +373,43 @@ class UserBloc extends ChangeNotifier {
 
         break;
       case Operation.toggleTransition:
-        if (!_floorWidgetModelList.contains(
-          floorWidgetModel,
+        if (_floorWidgetModelList.contains(
+          floorWidgetModelTapped,
         )) {
+          floorWidgetModelTapped = _floorWidgetModelList.singleWhere(
+            (
+              floorWidgetModel,
+            ) =>
+                floorWidgetModelTapped == floorWidgetModel,
+          );
+        } else {
           return;
         }
 
-        if ((_floorWidgetModel0 == null) && (_floorWidgetModel1 == null)) {
-          _floorWidgetModel0 = floorWidgetModel;
-        } else if ((_floorWidgetModel0 != null) &&
-            (_floorWidgetModel1 == null)) {
-          if (_floorWidgetModel0 == floorWidgetModel) {
-            _floorWidgetModel0 = null;
-          } else {
-            _floorWidgetModel1 = floorWidgetModel;
-          }
+        if (_floorWidgetModelSelected == null) {
+          _floorWidgetModelSelected = floorWidgetModelTapped;
         } else {
-          if (_floorWidgetModel0 == floorWidgetModel) {
-            _floorWidgetModel0 = _floorWidgetModel1;
-            _floorWidgetModel1 = null;
-          } else if (_floorWidgetModel1 == floorWidgetModel) {
-            _floorWidgetModel1 = null;
+          if (_floorWidgetModelSelected == floorWidgetModelTapped) {
+            _floorWidgetModelSelected = null;
           } else {
-            _floorWidgetModel0 = _floorWidgetModel1;
-            _floorWidgetModel1 = floorWidgetModel;
+            final transitionWidgetModel = TransitionWidgetModel(
+              floorWidgetModel0: _floorWidgetModelSelected!,
+              floorWidgetModel1: floorWidgetModelTapped,
+            );
+
+            if (_transitionWidgetModelList.contains(
+              transitionWidgetModel,
+            )) {
+              _transitionWidgetModelList.remove(
+                transitionWidgetModel,
+              );
+            } else {
+              _transitionWidgetModelList.add(
+                transitionWidgetModel,
+              );
+            }
+
+            _floorWidgetModelSelected = floorWidgetModelTapped;
           }
         }
 
