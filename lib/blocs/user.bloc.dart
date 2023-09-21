@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/floor.enum.dart';
-import 'package:slay_the_spire_path_finder_mobile/constants/graph_regex.enum.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/operation.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/result_status.dart';
-import 'package:slay_the_spire_path_finder_mobile/constants/settings.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/edge.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/floor.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/floor_widget.model.dart';
@@ -30,9 +28,9 @@ class UserBloc extends ChangeNotifier {
 
   FloorEnum get floor => _floor;
 
-  FloorWidgetModel? get floorWidgetModelSelected => _floorWidgetModelSelected;
-
   List<FloorWidgetModel> get floorWidgetModelList => _floorWidgetModelList;
+
+  FloorWidgetModel? get floorWidgetModelSelected => _floorWidgetModelSelected;
   Image? get image => _image;
 
   Operation get operation => _operation;
@@ -41,6 +39,16 @@ class UserBloc extends ChangeNotifier {
 
   List<TransitionWidgetModel> get transitionWidgetModelList =>
       _transitionWidgetModelList;
+
+  int byY(FloorWidgetModel a, FloorWidgetModel b) {
+    if (a.y > b.y) {
+      return -1;
+    }
+    if (a.y < b.y) {
+      return 1;
+    }
+    return 0;
+  }
 
   clearImage() {
     _image = null;
@@ -55,7 +63,6 @@ class UserBloc extends ChangeNotifier {
   }
 
   ResultModel<void> findPaths({
-    required String graph,
     required Map<FloorEnum, double> weightMap,
     required AppLocalizations l10n,
   }) {
@@ -103,45 +110,151 @@ class UserBloc extends ChangeNotifier {
     bool hasNeow = false;
     bool hasBoss = false;
 
-    final edgeList = Settings.floorRegex
-        .allMatches(
-      graph,
-    )
-        .map(
+    final floorWidgetModelPendingList = <FloorWidgetModel>[];
+
+    // Rewritten from a forEach because of avoid_function_literals_in_foreach_calls
+    for (final feTransitionWidget in _transitionWidgetModelList) {
+      if (feTransitionWidget.floorWidgetModel0.kind == FloorEnum.neow) {
+        feTransitionWidget.exitingFloorWidgetModel =
+            feTransitionWidget.floorWidgetModel0;
+        feTransitionWidget.enteringFloorWidgetModel =
+            feTransitionWidget.floorWidgetModel1;
+      } else if (feTransitionWidget.floorWidgetModel1.kind == FloorEnum.neow) {
+        feTransitionWidget.exitingFloorWidgetModel =
+            feTransitionWidget.floorWidgetModel1;
+        feTransitionWidget.enteringFloorWidgetModel =
+            feTransitionWidget.floorWidgetModel0;
+      } else if (feTransitionWidget.floorWidgetModel0.kind == FloorEnum.boss) {
+        feTransitionWidget.exitingFloorWidgetModel =
+            feTransitionWidget.floorWidgetModel1;
+        feTransitionWidget.enteringFloorWidgetModel =
+            feTransitionWidget.floorWidgetModel0;
+      } else if (feTransitionWidget.floorWidgetModel1.kind == FloorEnum.boss) {
+        feTransitionWidget.exitingFloorWidgetModel =
+            feTransitionWidget.floorWidgetModel0;
+        feTransitionWidget.enteringFloorWidgetModel =
+            feTransitionWidget.floorWidgetModel1;
+      }
+
+      if (feTransitionWidget.enteringFloorWidgetModel != null) {
+        floorWidgetModelPendingList
+            .add(feTransitionWidget.enteringFloorWidgetModel!);
+      }
+    }
+
+    bool hasDoneSomething = true;
+
+    while (hasDoneSomething &&
+        _transitionWidgetModelList.any(
+          (
+            aTransitionWidget,
+          ) =>
+              !aTransitionWidget.hasEnteringAndExiting(),
+        )) {
+      hasDoneSomething = false;
+
+      final transitionWidgetModelPendingList = _transitionWidgetModelList.where(
+        (
+          wTransitionWidget,
+        ) =>
+            (!wTransitionWidget.hasEnteringAndExiting()) &&
+            (floorWidgetModelPendingList
+                    .contains(wTransitionWidget.floorWidgetModel0) ||
+                floorWidgetModelPendingList
+                    .contains(wTransitionWidget.floorWidgetModel1)),
+      );
+
+      // Rewritten from a forEach because of avoid_function_literals_in_foreach_calls
+      for (var feTransition in transitionWidgetModelPendingList) {
+        if (floorWidgetModelPendingList.contains(
+          feTransition.floorWidgetModel0,
+        )) {
+          feTransition.exitingFloorWidgetModel = feTransition.floorWidgetModel0;
+          feTransition.enteringFloorWidgetModel =
+              feTransition.floorWidgetModel1;
+
+          hasDoneSomething = true;
+        } else {
+          feTransition.exitingFloorWidgetModel = feTransition.floorWidgetModel1;
+          feTransition.enteringFloorWidgetModel =
+              feTransition.floorWidgetModel0;
+
+          hasDoneSomething = true;
+        }
+      }
+
+      floorWidgetModelPendingList.clear();
+
+      floorWidgetModelPendingList.addAll(
+        transitionWidgetModelPendingList.map(
+          (
+            mTransition,
+          ) =>
+              mTransition.enteringFloorWidgetModel!,
+        ),
+      );
+    }
+
+    if ((!hasDoneSomething) ||
+        _transitionWidgetModelList.any(
+          (
+            aTransitionWidget,
+          ) =>
+              !aTransitionWidget.hasEnteringAndExiting(),
+        )) {
+      return ResultModel(
+        status: ResultStatus.warning,
+        message: l10n.pathStillOpen,
+      );
+    }
+
+    // Rewritten from a forEach because of avoid_function_literals_in_foreach_calls
+    for (final feFloorEnum in FloorEnum.valuesMid) {
+      final floorWidgetModelSameKindList = _floorWidgetModelList
+          .where(
+            (
+              wFloorWidget,
+            ) =>
+                wFloorWidget.kind == feFloorEnum,
+          )
+          .toList();
+
+      floorWidgetModelSameKindList.sort(byY);
+
+      // Rewritten from a forEach because of avoid_function_literals_in_foreach_calls
+      for (var feIndexedFloorWidget in floorWidgetModelSameKindList.indexed) {
+        feIndexedFloorWidget.$2.number = feIndexedFloorWidget.$1.toString();
+      }
+    }
+
+    final edgeList = _transitionWidgetModelList.map(
       (
-        transition,
+        mTransitionWidget,
       ) {
-        final isNeow = transition.namedGroup(
-              GraphRegexEnum.exitingNeow.tag,
-            ) !=
-            null;
-        final isBoss = transition.namedGroup(
-              GraphRegexEnum.enteringBoss.tag,
-            ) !=
-            null;
+        final isNeow = mTransitionWidget.hasKind(
+          FloorEnum.neow,
+        );
+
+        final isBoss = mTransitionWidget.hasKind(
+          FloorEnum.boss,
+        );
 
         hasNeow = hasNeow || isNeow;
         hasBoss = hasBoss || isBoss;
 
         final exitingFloorModel = isNeow
             ? neowNode.floor
-            : floorMap[transition.namedGroup(
-                GraphRegexEnum.exitingFloor.tag,
-              )]!;
+            : floorMap[mTransitionWidget.exitingFloorWidgetModel!.kind.name]!;
 
         final enteringFloorModel = isBoss
             ? bossNode.floor
-            : floorMap[transition.namedGroup(
-                GraphRegexEnum.enteringFloor.tag,
-              )]!;
+            : floorMap[mTransitionWidget.enteringFloorWidgetModel!.kind.name]!;
 
-        final exitingFloorNumber = transition.namedGroup(
-          GraphRegexEnum.exitingNumber.tag,
-        );
+        final exitingFloorNumber =
+            mTransitionWidget.exitingFloorWidgetModel!.number;
 
-        final enteringFloorNumber = transition.namedGroup(
-          GraphRegexEnum.enteringNumber.tag,
-        );
+        final enteringFloorNumber =
+            mTransitionWidget.enteringFloorWidgetModel!.number;
 
         var exitingNode = isNeow
             ? neowNode
@@ -211,7 +324,7 @@ class UserBloc extends ChangeNotifier {
 
     final closedPathList = <PathModel>[];
 
-    bool hasDoneSomething = true;
+    hasDoneSomething = true;
 
     ResultModel? result;
 

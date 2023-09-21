@@ -5,6 +5,8 @@ class FloorWidgetModel {
   final double x;
   final double y;
 
+  String? number;
+
   FloorWidgetModel({
     required this.kind,
     required this.x,
