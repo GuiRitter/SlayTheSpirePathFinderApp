@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -11,8 +8,8 @@ import 'package:slay_the_spire_path_finder_mobile/constants/floor.enum.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/operation.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/settings.dart';
 import 'package:slay_the_spire_path_finder_mobile/main.dart';
-import 'package:slay_the_spire_path_finder_mobile/models/floor_widget.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/ui/shared/formatters/decimal_text_input.formatter.dart';
+import 'package:slay_the_spire_path_finder_mobile/ui/widgets/map.widget.dart';
 
 const boxDecoration = BoxDecoration(
   gradient: LinearGradient(
@@ -33,21 +30,21 @@ const boxDecoration = BoxDecoration(
   ),
 );
 
+final floorWidgetSizeByEnum = <FloorEnum, Size>{};
+
+const floorWidgetBlurStyle = TextStyle(
+  color: Colors.white,
+  fontSize: Settings.floorWidgetFontSize,
+  fontWeight: FontWeight.bold,
+);
+
+const floorWidgetFocusStyle = TextStyle(
+  color: Colors.black,
+  fontSize: Settings.floorWidgetFontSize,
+  fontWeight: FontWeight.bold,
+);
+
 class HomePage extends StatelessWidget {
-  static final floorWidgetSizeByEnum = <FloorEnum, Size>{};
-
-  static const floorWidgetBlurStyle = TextStyle(
-    color: Colors.white,
-    fontSize: Settings.floorWidgetFontSize,
-    fontWeight: FontWeight.bold,
-  );
-
-  static const floorWidgetFocusStyle = TextStyle(
-    color: Colors.black,
-    fontSize: Settings.floorWidgetFontSize,
-    fontWeight: FontWeight.bold,
-  );
-
   final controllerByEnum = {
     FloorEnum.unknown: TextEditingController(
       text: "1",
@@ -410,86 +407,11 @@ class HomePage extends StatelessWidget {
                               context: context,
                               tapUpDetails: tapUpDetails,
                             ),
-                            child: Stack(
-                              children: [
-                                userBloc.image!,
-                                ...userBloc.transitionWidgetModelList.map(
-                                  (
-                                    transitionWidgetModel,
-                                  ) {
-                                    final distance = sqrt(
-                                      pow(
-                                            transitionWidgetModel
-                                                    .floorWidgetModel0.x -
-                                                transitionWidgetModel
-                                                    .floorWidgetModel1.x,
-                                            2,
-                                          ) +
-                                          pow(
-                                            transitionWidgetModel
-                                                    .floorWidgetModel0.y -
-                                                transitionWidgetModel
-                                                    .floorWidgetModel1.y,
-                                            2,
-                                          ),
-                                    );
-
-                                    final center0 = getPoint(
-                                      floorWidgetModel: transitionWidgetModel
-                                          .floorWidgetModel0,
-                                    );
-
-                                    final center1 = getPoint(
-                                      floorWidgetModel: transitionWidgetModel
-                                          .floorWidgetModel1,
-                                    );
-
-                                    final center = Point(
-                                      (center0.x + center1.x) / 2,
-                                      (center0.y + center1.y) / 2,
-                                    );
-
-                                    final angle = atan2(center1.y - center0.y,
-                                        center1.x - center0.x);
-
-                                    return Positioned(
-                                      left: center.x - (distance / 2),
-                                      top: center.y -
-                                          Settings.materialBaselineGridSizeHalf,
-                                      child: Transform.rotate(
-                                        angle: angle,
-                                        alignment: Alignment.center,
-                                        child: SizedBox.fromSize(
-                                          size: Size(
-                                            distance,
-                                            Settings.materialBaselineGridSize,
-                                          ),
-                                          child: Container(
-                                            decoration: boxDecoration,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                ...userBloc.floorWidgetModelList.map(
-                                  (
-                                    floorWidgetModel,
-                                  ) =>
-                                      Positioned(
-                                    left: floorWidgetModel.x,
-                                    top: floorWidgetModel.y,
-                                    child: Text(
-                                      "${floorWidgetModel.kind.name}${(kDebugMode && (floorWidgetModel.number?.isNotEmpty ?? false)) ? floorWidgetModel.number : ""}",
-                                      style: userBloc.isFocused(
-                                              floorWidgetModel:
-                                                  floorWidgetModel)
-                                          ? floorWidgetFocusStyle
-                                          : floorWidgetBlurStyle,
-                                    ),
-                                  ),
-                                )
-                              ],
+                            child: MapWidget(
+                              transitionWidgetModelList:
+                                  userBloc.transitionWidgetModelList,
+                              floorWidgetModelList:
+                                  userBloc.floorWidgetModelList,
                             ),
                           ),
                         ),
@@ -499,17 +421,6 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Point<double> getPoint({
-    required FloorWidgetModel floorWidgetModel,
-  }) {
-    return Point(
-      floorWidgetModel.x +
-          ((floorWidgetSizeByEnum[floorWidgetModel.kind]!.width) / 2),
-      floorWidgetModel.y +
-          ((floorWidgetSizeByEnum[floorWidgetModel.kind]!.height) / 2),
     );
   }
 
