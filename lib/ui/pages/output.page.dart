@@ -38,7 +38,11 @@ class OutputPage extends StatelessWidget {
             padding: EdgeInsets.only(
               bottom: fieldPadding,
             ),
-            child: Text(outputLine),
+            child: Text(
+              outputLine.toString(
+                l10n: l10n,
+              ),
+            ),
           ),
         )
         .toList();

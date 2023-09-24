@@ -12,7 +12,7 @@ import 'package:slay_the_spire_path_finder_mobile/models/result.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/transition_widget.model.dart';
 
 class UserBloc extends ChangeNotifier {
-  final List<String> _output = <String>[];
+  final List<PathModel> _output = <PathModel>[];
 
   int? _outputIndex;
 
@@ -37,7 +37,7 @@ class UserBloc extends ChangeNotifier {
 
   Operation get operation => _operation;
 
-  List<String> get output => List.unmodifiable(
+  List<PathModel> get output => List.unmodifiable(
         _output,
       );
 
@@ -397,14 +397,7 @@ class UserBloc extends ChangeNotifier {
     _output.clear();
 
     _output.addAll(
-      closedPathList.map(
-        (
-          mPath,
-        ) =>
-            mPath.toString(
-          l10n: l10n,
-        ),
-      ),
+      closedPathList,
     );
 
     _outputIndex = 0;
