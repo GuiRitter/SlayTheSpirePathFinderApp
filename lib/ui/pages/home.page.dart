@@ -124,15 +124,6 @@ class HomePage extends StatelessWidget {
         ),
       );
     } else if (userBloc.output.isEmpty) {
-      // TODO debug
-      actionList.add(
-        IconButton(
-          onPressed: () => userBloc.zBuildScenario(),
-          icon: const Icon(
-            Icons.settings,
-          ),
-        ),
-      );
       actionList.add(
         IconButton(
           onPressed: () => onFindPressed(
@@ -145,6 +136,7 @@ class HomePage extends StatelessWidget {
           ),
         ),
       );
+
       leading = BackButton(
         onPressed: () => onBackPressed(
           context: context,
