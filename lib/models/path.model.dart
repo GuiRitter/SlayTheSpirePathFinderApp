@@ -37,6 +37,10 @@ class PathModel implements Comparable<PathModel> {
 
   int get length => _nodeList.length;
 
+  List<NodeModel> get nodeList => List.unmodifiable(
+        _nodeList,
+      );
+
   double get weight => _nodeList.fold(
         0,
         (
