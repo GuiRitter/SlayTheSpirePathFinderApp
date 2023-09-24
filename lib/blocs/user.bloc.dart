@@ -12,7 +12,7 @@ import 'package:slay_the_spire_path_finder_mobile/models/result.model.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/transition_widget.model.dart';
 
 class UserBloc extends ChangeNotifier {
-  String? _output;
+  final List<String> _output = <String>[];
 
   Image? _image;
 
@@ -35,7 +35,9 @@ class UserBloc extends ChangeNotifier {
 
   Operation get operation => _operation;
 
-  String? get output => _output;
+  List<String> get output => List.unmodifiable(
+        _output,
+      );
 
   List<TransitionWidgetModel> get transitionWidgetModelList =>
       _transitionWidgetModelList;
@@ -58,7 +60,7 @@ class UserBloc extends ChangeNotifier {
   }
 
   clearPaths() {
-    _output = null;
+    _output.clear();
     notifyListeners();
   }
 
@@ -387,29 +389,32 @@ class UserBloc extends ChangeNotifier {
 
     closedPathList.sort();
 
-    _output = closedPathList.map(
-      (
-        mPath,
-      ) {
-        final count = mPath
-            .getFloorCountByKind()
-            .entries
-            .map(
-              (
-                entry,
-              ) =>
-                  "${l10n.floorEnum(
-                        entry.key.name,
-                      ).toLowerCase()}: ${entry.value}",
-            )
-            .join(
-              ", ",
-            );
-        return "${mPath.toString()} ($count)";
-      },
-    ).join(
-      "\n",
+    _output.clear();
+
+    _output.addAll(
+      closedPathList.map(
+        (
+          mPath,
+        ) {
+          final count = mPath
+              .getFloorCountByKind()
+              .entries
+              .map(
+                (
+                  entry,
+                ) =>
+                    "${l10n.floorEnum(
+                          entry.key.name,
+                        ).toLowerCase()}: ${entry.value}",
+              )
+              .join(
+                ", ",
+              );
+          return "${mPath.toString()} ($count)";
+        },
+      ),
     );
+
     notifyListeners();
 
     return ResultModel(

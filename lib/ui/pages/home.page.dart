@@ -123,7 +123,7 @@ class HomePage extends StatelessWidget {
           ),
         ),
       );
-    } else if (userBloc.output?.isEmpty ?? true) {
+    } else if (userBloc.output.isEmpty) {
       // TODO debug
       actionList.add(
         IconButton(
@@ -483,7 +483,7 @@ class HomePage extends StatelessWidget {
       listen: false,
     );
 
-    if (userBloc.output?.isNotEmpty ?? false) {
+    if (userBloc.output.isNotEmpty) {
       userBloc.clearPaths();
     } else {
       userBloc.clearImage();

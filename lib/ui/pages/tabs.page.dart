@@ -17,6 +17,6 @@ class TabsPage extends StatelessWidget {
       context,
     );
 
-    return (userBloc.output == null) ? HomePage() : const OutputPage();
+    return (userBloc.output.isEmpty) ? HomePage() : const OutputPage();
   }
 }

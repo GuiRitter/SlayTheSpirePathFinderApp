@@ -59,7 +59,9 @@ class OutputPage extends StatelessWidget {
             // needs an extra -1
             hintMaxLines: Settings.intMax53 - 1,
           ),
-          initialValue: userBloc.output,
+          initialValue: userBloc.output.join(
+            "\n",
+          ),
         ),
       ),
     );
