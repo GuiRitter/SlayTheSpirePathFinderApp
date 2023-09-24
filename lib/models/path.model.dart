@@ -1,3 +1,4 @@
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:slay_the_spire_path_finder_mobile/constants/floor.enum.dart';
 import 'package:slay_the_spire_path_finder_mobile/models/node.model.dart';
 
@@ -142,6 +143,32 @@ class PathModel implements Comparable<PathModel> {
     return count;
   }
 
+  String getFloorCountByKindString({
+    required AppLocalizations l10n,
+  }) =>
+      getFloorCountByKind()
+          .entries
+          .map(
+            (
+              entry,
+            ) =>
+                "${l10n.floorEnum(
+                      entry.key.name,
+                    ).toLowerCase()}: ${entry.value}",
+          )
+          .join(
+            ", ",
+          );
+
   @override
-  String toString() => "$_nodeList (weight: $weight)";
+  String toString({
+    AppLocalizations? l10n,
+  }) {
+    final string = "$_nodeList (weight: $weight)";
+    return (l10n != null)
+        ? "$string (${getFloorCountByKindString(
+            l10n: l10n,
+          )})"
+        : string;
+  }
 }

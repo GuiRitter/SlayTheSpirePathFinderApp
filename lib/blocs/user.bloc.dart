@@ -400,23 +400,10 @@ class UserBloc extends ChangeNotifier {
       closedPathList.map(
         (
           mPath,
-        ) {
-          final count = mPath
-              .getFloorCountByKind()
-              .entries
-              .map(
-                (
-                  entry,
-                ) =>
-                    "${l10n.floorEnum(
-                          entry.key.name,
-                        ).toLowerCase()}: ${entry.value}",
-              )
-              .join(
-                ", ",
-              );
-          return "${mPath.toString()} ($count)";
-        },
+        ) =>
+            mPath.toString(
+          l10n: l10n,
+        ),
       ),
     );
 
