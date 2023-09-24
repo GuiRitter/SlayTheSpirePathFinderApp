@@ -14,6 +14,8 @@ import 'package:slay_the_spire_path_finder_mobile/models/transition_widget.model
 class UserBloc extends ChangeNotifier {
   final List<String> _output = <String>[];
 
+  int? _outputIndex;
+
   Image? _image;
 
   var _operation = Operation.placeFloor;
@@ -39,6 +41,8 @@ class UserBloc extends ChangeNotifier {
         _output,
       );
 
+  int? get outputIndex => _outputIndex;
+
   List<TransitionWidgetModel> get transitionWidgetModelList =>
       _transitionWidgetModelList;
 
@@ -61,6 +65,7 @@ class UserBloc extends ChangeNotifier {
 
   clearPaths() {
     _output.clear();
+    _outputIndex = null;
     notifyListeners();
   }
 
@@ -415,12 +420,26 @@ class UserBloc extends ChangeNotifier {
       ),
     );
 
+    _outputIndex = 0;
+
     notifyListeners();
 
     return ResultModel(
       status: ResultStatus.success,
     );
   }
+
+  getMoreOutput() {
+    if (hasMoreOutput()) {
+      _outputIndex = _outputIndex! + 1;
+      notifyListeners();
+    }
+  }
+
+  bool hasMoreOutput() =>
+      output.isNotEmpty &&
+      (outputIndex != null) &&
+      (outputIndex! < (output.length - 1));
 
   isFocused({
     required FloorWidgetModel floorWidgetModel,
@@ -540,7 +559,7 @@ class UserBloc extends ChangeNotifier {
   }
 
   // TODO debug
-  buildScenario() {
+  zBuildScenario() {
     final floorMap = <String, FloorWidgetModel>{};
     floorMap["353.5; 1804.5"] = FloorWidgetModel(
       kind: FloorEnum.enemy,

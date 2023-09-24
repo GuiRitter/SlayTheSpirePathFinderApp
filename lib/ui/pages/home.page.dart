@@ -127,7 +127,7 @@ class HomePage extends StatelessWidget {
       // TODO debug
       actionList.add(
         IconButton(
-          onPressed: () => userBloc.buildScenario(),
+          onPressed: () => userBloc.zBuildScenario(),
           icon: const Icon(
             Icons.settings,
           ),

@@ -17,5 +17,6 @@
   "outputLabel": "Caminhos do melhor ao pior",
   "pathHasCycle": "Um ciclo foi detectado no mapa. Verifique as transições.",
   "pathStillOpen": "Um caminho foi encontrado que não leva ao fim. Verifique as transições.",
+  "showMore": "Mostrar mais ({outputIndex}/{outputTotal})",
   "title": "Busca de Caminho para Slay the Spire"
 }

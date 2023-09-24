@@ -17,5 +17,6 @@
   "outputLabel": "Paths from best to worst",
   "pathHasCycle": "A cycle has been detected in the map. Check the transitions.",
   "pathStillOpen": "A path was found that does not lead to the end. Check the transitions.",
+  "showMore": "Show more ({outputIndex}/{outputTotal})",
   "title": "Slay the Spire Path Finder"
 }

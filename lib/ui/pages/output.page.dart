@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:slay_the_spire_path_finder_mobile/blocs/user.bloc.dart';
-import 'package:slay_the_spire_path_finder_mobile/constants/settings.dart';
 
 class OutputPage extends StatelessWidget {
   const OutputPage({
@@ -25,6 +24,38 @@ class OutputPage extends StatelessWidget {
           context,
         ).textTheme.labelLarge?.fontSize ??
         0.0;
+
+    final childrenList = userBloc.output
+        .getRange(
+          0,
+          userBloc.outputIndex! + 1,
+        )
+        .map<Widget>(
+          (
+            outputLine,
+          ) =>
+              Padding(
+            padding: EdgeInsets.only(
+              bottom: fieldPadding,
+            ),
+            child: Text(outputLine),
+          ),
+        )
+        .toList();
+
+    if (userBloc.hasMoreOutput()) {
+      childrenList.add(
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: userBloc.getMoreOutput,
+            child: Text(
+              l10n.showMore(userBloc.outputIndex! + 1, userBloc.output.length),
+            ),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -50,17 +81,9 @@ class OutputPage extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(fieldPadding),
-        child: TextFormField(
-          keyboardType: TextInputType.multiline,
-          maxLines: null,
-          decoration: InputDecoration(
-            labelText: l10n.outputLabel,
-            hintText: l10n.outputHint,
-            // needs an extra -1
-            hintMaxLines: Settings.intMax53 - 1,
-          ),
-          initialValue: userBloc.output.join(
-            "\n",
+        child: SingleChildScrollView(
+          child: Column(
+            children: childrenList,
           ),
         ),
       ),
