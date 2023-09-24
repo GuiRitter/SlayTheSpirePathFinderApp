@@ -37,4 +37,11 @@ class TransitionWidgetModel {
     FloorEnum kind,
   ) =>
       (floorWidgetModel0.kind == kind) || (floorWidgetModel1.kind == kind);
+
+  toJson() => {
+        "floorWidgetModel0": floorWidgetModel0.toJson(),
+        "floorWidgetModel1": floorWidgetModel1.toJson(),
+        "enteringFloorWidgetModel": enteringFloorWidgetModel?.toJson(),
+        "exitingFloorWidgetModel": exitingFloorWidgetModel?.toJson(),
+      };
 }

@@ -25,4 +25,10 @@ class FloorWidgetModel {
     }
     return ((x - other.x).abs() < 16) && ((y - other.y).abs() < 16);
   }
+
+  toJson() => {
+        "kind": kind.toString(),
+        "x,y": "($x; $y)",
+        "number": number,
+      };
 }
